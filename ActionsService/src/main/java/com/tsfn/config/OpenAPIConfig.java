@@ -15,7 +15,7 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class OpenAPIConfig {
 
-	private String devUrl = "http://localhost:7070";
+	private String devUrl = "http://localhost:9090";
 	
 	
 	@Bean

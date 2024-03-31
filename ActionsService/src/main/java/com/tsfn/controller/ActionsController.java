@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsfn.model.Category;
-import com.tsfn.model.Coupon;
+import com.tsfn.model.Action;
 import com.tsfn.service.LoadersService;
 import com.tsfn.service.exceptions.CouponAlreadyExistsException;
 import com.tsfn.service.exceptions.CouponAlreadyPurchasedException;
@@ -32,17 +32,17 @@ public class ActionsController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getCouponById(@PathVariable int id) {
         try {
-            Coupon coupon = couponService.getCouponById(id);
-            return new ResponseEntity<>(coupon, HttpStatus.OK);
+            Action action = couponService.getCouponById(id);
+            return new ResponseEntity<>(action, HttpStatus.OK);
         } catch (CouponNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createCoupon(@RequestBody Coupon coupon) {
+    public ResponseEntity<?> createCoupon(@RequestBody Action action) {
         try {
-            Coupon createdCoupon = couponService.addCoupon(coupon);
+            Action createdCoupon = couponService.addCoupon(action);
             return new ResponseEntity<>(createdCoupon, HttpStatus.CREATED);
         } catch (CouponAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -51,9 +51,9 @@ public class ActionsController {
  
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateCoupon(@RequestBody Coupon coupon) {
+    public ResponseEntity<?> updateCoupon(@RequestBody Action action) {
         try {
-            Coupon updatedCoupon = couponService.updateCoupon(coupon);
+            Action updatedCoupon = couponService.updateCoupon(action);
             return new ResponseEntity<>(updatedCoupon, HttpStatus.OK);
         } catch (CouponNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -73,7 +73,7 @@ public class ActionsController {
     @GetMapping("/company/{companyId}")
     public ResponseEntity<?> getAllCompanyCoupons(@PathVariable int companyId) {
         try {
-            List<Coupon> companyCoupons = couponService.getAllCompanyCoupons(companyId);
+            List<Action> companyCoupons = couponService.getAllCompanyCoupons(companyId);
             return new ResponseEntity<>(companyCoupons, HttpStatus.OK);
         } catch (CouponNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -83,7 +83,7 @@ public class ActionsController {
     @GetMapping("/company/{companyId}/category/{category}")
     public ResponseEntity<?> getCompanyCouponsByCategory(@PathVariable int companyId, @PathVariable Category category) {
         try {
-            List<Coupon> companyCouponsByCategory = couponService.getCompanyCouponsByCategory(companyId, category);
+            List<Action> companyCouponsByCategory = couponService.getCompanyCouponsByCategory(companyId, category);
             return new ResponseEntity<>(companyCouponsByCategory, HttpStatus.OK);
         } catch (CouponNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -93,7 +93,7 @@ public class ActionsController {
     @GetMapping("/company/{companyId}/maxprice/{maxPrice}")
     public ResponseEntity<?> getCompanyCouponsByMaxPrice(@PathVariable int companyId, @PathVariable double maxPrice) {
         try {
-            List<Coupon> companyCouponsByMaxPrice = couponService.getCompanyCouponsByMaxPrice(companyId, maxPrice);
+            List<Action> companyCouponsByMaxPrice = couponService.getCompanyCouponsByMaxPrice(companyId, maxPrice);
             return new ResponseEntity<>(companyCouponsByMaxPrice, HttpStatus.OK);
         } catch (CouponNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

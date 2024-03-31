@@ -6,13 +6,13 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.tsfn.model.Category;
-import com.tsfn.model.Coupon;
+import com.tsfn.model.Action;
 
-public interface ActionsRepository extends JpaRepository<Coupon, Integer> {
+public interface ActionsRepository extends JpaRepository<Action, Integer> {
 		
-	 	Optional<Coupon> findByTitleAndCompanyId(String title, int companyId);
-	    List<Coupon> findByCompanyId(int companyId);
-	    List<Coupon> findByCompanyIdAndCategory(int companyId, Category category);
-	    List<Coupon> findByCompanyIdAndPriceLessThanEqual(int companyId, double maxPrice);
+	 	Optional<Action> findByTitleAndCompanyId(String title, int companyId);
+	    List<Action> findByCompanyId(int companyId);
+	    List<Action> findByCompanyIdAndCategory(int companyId, Category category);
+	    List<Action> findByCompanyIdAndPriceLessThanEqual(int companyId, double maxPrice);
 
 }

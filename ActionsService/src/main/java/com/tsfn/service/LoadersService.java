@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tsfn.model.Category;
-import com.tsfn.model.Coupon;
+import com.tsfn.model.Action;
 import com.tsfn.repository.ActionsRepository;
 import com.tsfn.service.exceptions.CouponAlreadyExistsException;
 import com.tsfn.service.exceptions.CouponNotAvailableException;
@@ -20,26 +20,26 @@ public class LoadersService {
 	@Autowired
 	private ActionsRepository couponRepository;
 
-	public Coupon getCouponById(int id) {
+	public Action getCouponById(int id) {
         return couponRepository.findById(id)
                                .orElseThrow(() -> new CouponNotFoundException("Coupon not found with ID: " + id));
     }
 
-	public Coupon addCoupon(Coupon coupon) {
+	public Action addCoupon(Action action) {
 		// Check if a coupon with the same title already exists for the same company
-		if (couponRepository.findByTitleAndCompanyId(coupon.getTitle(), coupon.getCompanyId()).isPresent()) {
+		if (couponRepository.findByTitleAndCompanyId(action.getTitle(), action.getCompanyId()).isPresent()) {
 			throw new CouponAlreadyExistsException("Coupon with the same title already exists for this company");
 		}
-		return couponRepository.save(coupon);
+		return couponRepository.save(action);
 	}
 
-	public Coupon updateCoupon(Coupon coupon) {
+	public Action updateCoupon(Action action) {
 		// Check if the coupon exists
-		if (!couponRepository.existsById(coupon.getId())) {
+		if (!couponRepository.existsById(action.getId())) {
 			throw new CouponNotFoundException("Coupon not found.");
 		}
 		// Update the coupon
-		return couponRepository.save(coupon);
+		return couponRepository.save(action);
 	}
 
 	public void deleteCoupon(int couponId) {
@@ -50,25 +50,25 @@ public class LoadersService {
 		couponRepository.deleteById(couponId);
 	}
 
-	public List<Coupon> getAllCompanyCoupons(int companyId) {
+	public List<Action> getAllCompanyCoupons(int companyId) {
 		return couponRepository.findByCompanyId(companyId);
 	}
 
-	public List<Coupon> getCompanyCouponsByCategory(int companyId, Category category) {
+	public List<Action> getCompanyCouponsByCategory(int companyId, Category category) {
 		return couponRepository.findByCompanyIdAndCategory(companyId, category);
 	}
 
-	public List<Coupon> getCompanyCouponsByMaxPrice(int companyId, double maxPrice) {
+	public List<Action> getCompanyCouponsByMaxPrice(int companyId, double maxPrice) {
 		return couponRepository.findByCompanyIdAndPriceLessThanEqual(companyId, maxPrice);
 	}
 
 	public void purchaseCoupon(int customerId, int couponId) {
 		// Check if the coupon exists
-		Coupon coupon = couponRepository.findById(couponId)
+		Action action = couponRepository.findById(couponId)
 				.orElseThrow(() -> new CouponNotFoundException("Coupon not found"));
 
 		// Check if the coupon is still valid for purchase
-		if (coupon.getEndDate().isBefore(LocalDate.now()) || coupon.getAmount() <= 0) {
+		if (action.getEndDate().isBefore(LocalDate.now()) || action.getAmount() <= 0) {
 			throw new CouponNotAvailableException("Coupon is no longer available for purchase");
 		}
 

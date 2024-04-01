@@ -1,0 +1,70 @@
+## Purpose
+This document will describe the steps of working with GitHub repo managed by Azure DevOps in order to complete tasks and solve bugs in the Sabratex 2 system.
+
+Following this procedure will ensure linear GitHub repo history that provides much easier maintenance of the project by the matter of history, rollbacks, etc.
+
+## Starting point
+The **main** branch(es) of each repository inlude:
+- `dev`: development branch: in most cases this branch includes the most advanced version of the system being currently under development;
+- `release-x.x.x`: release branch(es) in which `x.x.x` stand for `major.minor.patch` version of the release. These branches follow the actual releases released from the system. Most of the times the most recent `release-x.x.x` is the one running in production.
+
+### Versioning
+Major version: most of the times is promoted whenever an extremely big change is being developed: technology changes, architectural "earthquake", re-design, etc.
+
+Minor version: most of the time promoted whenever big features are developed and added to the system and/or in cases of scheduled releases (i.e. monthly, quaterly, etc.).
+
+Patch version: a version that is released due to minor fixes or extremely small features being developed.
+
+Management of Major.Minor.Patch version ensures that each new version will always be in the matter of numbering a later one that previously released, i.e. 2.0.0 is still a greater version than 1.19.1543.
+
+## Flow
+### Supporting a single branch
+Support of a single branch means that the actual development is performed on a single branch only, i.e. in `dev` only or development/fix of anything related to `release-` branches that **should not be aligned** with the `dev` branch.
+
+The example of the flow will be related to the work that should be done on `dev` branch having in mind Task 666 should be developed.
+
+1. Always start from the most updated branch on which the work should be started => perform a `pull` action on the `dev` branch (this will bring the `dev` branch to its most recent state).
+1. Create a new branch (from `dev`) named `task-666` (use `bug-` prefix for bugs and a number suffix as the number of the task/bug), meaning `task-666` and checkout it (most IDEs provide an ability to create and checkout the new branch in a single action).
+1. Implement the task. You may create as many commits under your branch as you wish (those commits will be united to a single one in the future). For the matter of an example we consider **3 commits** in the `task-666` branch,
+1. Whenever the task is ready you need to unite (squash) the commits to a single one. It is important to understand that this action **changes the history** of the GitHub. The squash is being done in the following manner:
+4.1. Open Git Bash.
+4.2. Navigate to the folder of the repository you're working on, i.e. `cd c:/projects/Sabratec2_Git/frontend` (pay attention to the usage of regular slash (/) instead of a backslash (\\)). Upon navigation you should verify that in the end of the path you see the curent branch you're working on in parentheses (`(task-666)`).
+4.3. verify you have only 3 commits to merge: execute `git log -n 5 --oneline` (in which `5` stands for amount of commits in the history you'd like to check from the latest one) and verify (based on comments) that the amount of commits to squash is 3.
+4.4. Perform the squash operation: execute `git rebase -i HEAD~3` (where `3` stands for amount of commits to be squashed). The Git Bash will navigate you to the editing application configured for your Git Bash (by default: Linux Vim, but can be changed to use Notepad++ / VSCode and more). In the opened file you will see the list of commits with `push` action for each and a list of possible actions for each commit. **Phase I:** You should **leave the first commit with push action** and **each other commits should be altered to use squash command** (you can use just `s` as a shorthand for squash). The editing should be performed for every commit except the first one. In our scenario commit 2 and commit 3. **Do not** change any comments during this phase, it will be ignored. In case you use Vim see below instructions of how to work with this tool. Save and close the Phase I edition. **Phase II:** Updating comments: a new instance of editing tool will be opened that will provide an ability to alter commit messages. You will see messages for each commit on a separate line. All other lines are preceded with `#` and this means a commented line (do not remove commented lines, it will be automatically omitted by GitHub). Update messages as you wish, you may also add `#` for existing messages of other commits in case those are not necessary. Save and close the Phase II edition.
+4.5. At this stage execute `git log -n 3 --oneline` to verify 3 commits have been squashed to a single one.
+4.6. Checkout/switch to `dev` branch. Issue a pull action to get the most updated `dev` branch locally.
+4.7. Checkout/switch back to `task-666` branch. Execute `git rebase dev` command in order to rebase your `task-666` branch on top of the most recent `dev`. At this stage conflicts may appear. Git bash/any IDE will inform you about the conflicts. Resolve all of the conflicts and execute `git rebase --continue` command. **In case the rebase operation started in the command line it SHOULD be completed also in the command line (otherwise problems may arise)**. Conflict resolution should NOT create a new commit for your branch.
+4.6. Now you should update GitHub. In case your branch (`task-666`) have never been pushed to GitHub (the work was done locally) then execute the following `git push origin task-666` or perform a push from the IDE. In case the branch was already pushed to GitHub you will not be allowed to directly push the branch since its history has been changed, therefore you'll ned to push forecefully: `git push -f origin task-666`.
+4.7. Now the GitHub is updated with your branch which has only a single commit in it.
+1. Wait for the PR to be approved.
+1. For each cycle of fixes (in case needed) for you branch perform step (4) in its full.
+1. Whenever the PR is approved:
+7.1. **Repeat steps 4.6 and 4.7.**
+7.2. Complete merge of your PR using **Rebase and fast-forward** option.
+1. Get back to your IDE:
+8.1. Checkout/switch to `dev` branch. Issue a pull on it to get the most recent version.
+8.2. Delete the `task-666` branch. It is not needed anymore.
+
+### Working on unapproved branch (TBD)
+
+### Supporting multiple branches
+At this moment both backend and frontend already have a release branch (`release-2.0.0`).
+In order to fix a bug / develop a task that should address the release version both `release-2.0.0` branch and `dev` branch should be updated with the fix. The set of actions to do so is as follows:
+1. Checkout/switch to `release-2.0.0` branch and sync/pull (as a rule of thumb we always start the fix from the least recent branch for which the work should be applied);
+1. Create a new branch from `release-2.0.0` and name it accordingly (i.e. `bug-666`);
+1. Do the fix;
+1. Get an approval for the fix (PR);
+1. Merge the branch with the fix to `release-2.0.0`. **Be cautious** since Azure DevOps by default selects the `dev` branch for merge. It should be changed manually to `release-2.0.0`.
+![image.png](/.attachments/image-8c8fc49d-f35d-469f-8d64-4faa47593b35.png)
+1. Upon successful completion of builds/checks etc. locally switch to `release-2.0.0` branch and sync/pull;
+1. Switch to `dev` branch and sync/pull;
+1. Create a new branch from `dev` and name it with `cp-` prefix (cp stands for cherry pick), i.e. `cp-bug-666`;
+1. Find the commit that was previously merged to `release-2.0.0` branch in the history of `release-2.0.0` branch and cherry pick this commit (all IDEs provide this option in the popup menu that is shown whenever right clicking on the commit line). This operation brings the changes been done in the commit on `release-2.0.0` branch to currently active branch (`cp-bug-666` that started from `dev`);
+1. Conflicts may arise since development on `dev` branch was done previously (yet, the chance of getting into conflict in the described sequence of actions is much lower than if the fix started from `dev` and should have been cherry picked to a branch created from `release-2.0.0`). In case conflicts appear, those need to be resolved. Upon resolution of all conflicts it is enough to click the "Continue" button in the IDE to complete the cherry pick operation;
+1. Publish the local `cp-...` branch and merge it to `dev`.
+
+### Command for deleting (pruning) unused upstreams
+Upstream is an automatic object created by GitHub to handle the sync between local branch and remote one
+WebStorm automatically removes this upstream on local branch deletion so nothing should be done. Yet, VSCode and Visual Studio do not so the process is as follows:
+1. Open comman prompt (or Terminal) and navigate to the root of the project for which the action should be performed (currently ...\backend or ...\frontend);
+2. Execute `git remote prune origin`. The list of pruned upstreams will be output as a result.

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
-import com.tsfn.model.Category;
 import com.tsfn.model.Action;
 import com.tsfn.repository.ActionsRepository;
 import com.tsfn.service.exceptions.CouponAlreadyExistsException;
@@ -15,7 +14,7 @@ import com.tsfn.service.exceptions.CouponNotAvailableException;
 import com.tsfn.service.exceptions.CouponNotFoundException;
 
 @Service
-public class LoadersService {
+public class ActionService {
 
 	@Autowired
 	private ActionsRepository couponRepository;
@@ -25,11 +24,11 @@ public class LoadersService {
                                .orElseThrow(() -> new CouponNotFoundException("Coupon not found with ID: " + id));
     }
 
-	public Action addCoupon(Action action) {
+	public Action addAction(Action action) {
 		// Check if a coupon with the same title already exists for the same company
-		if (couponRepository.findByTitleAndCompanyId(action.getTitle(), action.getCompanyId()).isPresent()) {
-			throw new CouponAlreadyExistsException("Coupon with the same title already exists for this company");
-		}
+//		if (couponRepository.findByTitleAndCompanyId(action.getTitle(), action.getCompanyId()).isPresent()) {
+//			throw new CouponAlreadyExistsException("Coupon with the same title already exists for this company");
+//		}
 		return couponRepository.save(action);
 	}
 
@@ -54,7 +53,7 @@ public class LoadersService {
 		return couponRepository.findByCompanyId(companyId);
 	}
 
-	public List<Action> getCompanyCouponsByCategory(int companyId, Category category) {
+	public List<Action> getCompanyCouponsByCategory(int companyId, Action category) {
 		return couponRepository.findByCompanyIdAndCategory(companyId, category);
 	}
 
@@ -68,9 +67,9 @@ public class LoadersService {
 				.orElseThrow(() -> new CouponNotFoundException("Coupon not found"));
 
 		// Check if the coupon is still valid for purchase
-		if (action.getEndDate().isBefore(LocalDate.now()) || action.getAmount() <= 0) {
-			throw new CouponNotAvailableException("Coupon is no longer available for purchase");
-		}
+//		if (action.getEndDate().isBefore(LocalDate.now()) || action.getAmount() <= 0) {
+//			throw new CouponNotAvailableException("Coupon is no longer available for purchase");
+//		}
 
 	
 	}

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tsfn.model.Category;
+
 import com.tsfn.model.Action;
-import com.tsfn.service.LoadersService;
+import com.tsfn.service.ActionService;
 import com.tsfn.service.exceptions.CouponAlreadyExistsException;
 import com.tsfn.service.exceptions.CouponAlreadyPurchasedException;
 import com.tsfn.service.exceptions.CouponNotAvailableException;
@@ -26,7 +26,7 @@ import com.tsfn.service.exceptions.CouponNotFoundException;
 @RequestMapping("/coupons")
 public class ActionsController {
     @Autowired
-    private LoadersService couponService;
+    private ActionService couponService;
     
     
     @GetMapping("/{id}")
@@ -42,7 +42,7 @@ public class ActionsController {
     @PostMapping("/create")
     public ResponseEntity<?> createCoupon(@RequestBody Action action) {
         try {
-            Action createdCoupon = couponService.addCoupon(action);
+            Action createdCoupon = couponService.addAction(action);
             return new ResponseEntity<>(createdCoupon, HttpStatus.CREATED);
         } catch (CouponAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -81,7 +81,7 @@ public class ActionsController {
     }
 
     @GetMapping("/company/{companyId}/category/{category}")
-    public ResponseEntity<?> getCompanyCouponsByCategory(@PathVariable int companyId, @PathVariable Category category) {
+    public ResponseEntity<?> getCompanyCouponsByCategory(@PathVariable int companyId, @PathVariable Action category) {
         try {
             List<Action> companyCouponsByCategory = couponService.getCompanyCouponsByCategory(companyId, category);
             return new ResponseEntity<>(companyCouponsByCategory, HttpStatus.OK);

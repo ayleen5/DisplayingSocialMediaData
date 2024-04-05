@@ -1,13 +1,9 @@
 package com.tsfn.model;
 
-import java.sql.Time;
-import java.util.ArrayList;
+
 import java.util.Date;
-import java.util.Hashtable;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,11 +20,10 @@ public class Metric {
 	private int id ;
 	
 	private String name;
-	private Date created_date; // should check if it it utils or sql
-	// need to thing about that, kinda weird
+	private Date created_date; 
+	// ???
 	private String created_by;
-	private Hashtable<String,ArrayList<String>> conditions;
-	@Enumerated(EnumType.STRING)
+	//@Enumerated(EnumType.STRING)
 	private String metricType;
 	private int threshold;
 	private int time_frame_hours ;

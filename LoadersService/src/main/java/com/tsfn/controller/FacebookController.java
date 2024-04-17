@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.tsfn.dto.LoaderDTO;
 import com.tsfn.model.Facebook;
 import com.tsfn.service.FacebookService;
 
@@ -21,35 +22,36 @@ public class FacebookController {
 
     // Create
     @PostMapping("/create/")
-    public ResponseEntity<Facebook> createFacebookData(@RequestBody Facebook facebookData) {
-        Facebook createdData = facebookService.createFacebookData(facebookData);
+    public ResponseEntity<LoaderDTO> createFacebookData(@RequestBody LoaderDTO facebookData) {
+    	LoaderDTO createdData = facebookService.createFacebookData(facebookData);
         return new ResponseEntity<>(createdData, HttpStatus.CREATED);
     }
 
     // Read
     @GetMapping("/getall/")
-    public ResponseEntity<List<Facebook>> getAllFacebookData() {
-        List<Facebook> facebookDataList = facebookService.getAllFacebookData();
+    public ResponseEntity<List<LoaderDTO>> getAllFacebookData() {
+        List<LoaderDTO> facebookDataList = facebookService.getAllFacebookData();
         return new ResponseEntity<>(facebookDataList, HttpStatus.OK);
     }
 
     @GetMapping("/get{postId}")
-    public ResponseEntity<Facebook> getFacebookDataById(@RequestParam int postId) {
-        Optional<Facebook> facebookData = facebookService.getFacebookDataById(postId);
+    public ResponseEntity<LoaderDTO> getFacebookDataById(@RequestParam int postId) {
+        Optional<LoaderDTO> facebookData = facebookService.getFacebookDataById(postId);
         return facebookData.map(data -> new ResponseEntity<>(data, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // Update
+ // Update
     @PutMapping("/update{postId}")
-    public ResponseEntity<Facebook> updateFacebookData(@RequestParam int postId, @RequestBody Facebook updatedData) {
-        Facebook updatedFacebookData = facebookService.updateFacebookData(postId, updatedData);
+    public ResponseEntity<LoaderDTO> updateFacebookData(@RequestParam int postId, @RequestBody LoaderDTO updatedData) {
+        LoaderDTO updatedFacebookData = facebookService.updateFacebookData(postId, updatedData);
         if (updatedFacebookData != null) {
             return new ResponseEntity<>(updatedFacebookData, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
 
     // Delete
     @DeleteMapping("/delete{postId}")

@@ -1,5 +1,6 @@
 package com.tsfn.model;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 
 
@@ -23,33 +24,31 @@ public class Facebook {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int postId;
 
-    private LocalDateTime timestamp;
-    private String postType;
-    private int impressions;
-    private int reach;
-    private int totalClicks;
-    private int reactions;
-    private int comments;
-    private int shares;
+    private Time Timestamp;
+    private String ContentType;
+    private int Impressions;
+    private int Views;
+    private int Clicks;
+    private int Likes;
+    private int Comments;
+    private int Shares;
     
-    @Column(name = "ctr")
-    private double ctr;
+    private double CTR;
     
-    @Column(name = "engagement_rate")
-    private double engagementRate;
+    private double Engagementrate;
     
     @PrePersist
     public void calculateMetrics() {
-        if (impressions > 0) {
-            ctr = (double) totalClicks / impressions;
+        if (Impressions > 0) {
+        	CTR = (double) Clicks / Impressions;
         } else {
-            ctr = 0.0;
+        	CTR = 0.0;
         }
         
-        if (reach > 0) {
-            engagementRate = (double) (reactions + comments + shares) / reach;
+        if (Views > 0) {
+        	Engagementrate = (double) (Likes + Comments + Shares) / Views;
         } else {
-            engagementRate = 0.0;
+        	Engagementrate = 0.0;
         }
     }
     

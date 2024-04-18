@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsfn.dto.LoaderDTO;
-import com.tsfn.model.Instagram;
 import com.tsfn.service.InstagramService;
 
 
@@ -33,7 +32,7 @@ public class InstagramController {
     }
 
     // Read
-    @GetMapping("/getall/")
+    @GetMapping("/getall")
     public ResponseEntity<List<LoaderDTO>> getAllFacebookData() {
         List<LoaderDTO> instagramDataList = instagramService.getAllInstagramData();
         return new ResponseEntity<>(instagramDataList, HttpStatus.OK);

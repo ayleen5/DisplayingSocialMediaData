@@ -1,6 +1,6 @@
 package com.tsfn.dto;
 
-import java.sql.Time;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
 public class LoaderDTO {
 	
 	private int PostID;
-	private Time Timestamp;
+	private LocalDateTime  Timestamp;
 	private String ContentType;
 	private int Impressions;
 	private int Views;

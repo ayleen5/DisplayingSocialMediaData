@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tsfn.dto.LoaderDTO;
@@ -29,17 +28,11 @@ public class FacebookService {
 	    
 
 	private LoaderDTO convertEntityToDto(Facebook facebook){
-		modelMapper.getConfiguration()
-		.setMatchingStrategy(MatchingStrategies.LOOSE);
-		LoaderDTO facebookDTO = new LoaderDTO();
-		facebookDTO = modelMapper.map(facebook, LoaderDTO.class);
-		return facebookDTO;
+		return modelMapper.map(facebook, LoaderDTO.class);
 	}
 	
 	private Facebook convertDtoToEntity(LoaderDTO loaderDTO) {
-	    modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-	    Facebook facebook = modelMapper.map(loaderDTO, Facebook.class);
-	    return facebook;
+	    return modelMapper.map(loaderDTO, Facebook.class);
 	}
 
 	// Create
@@ -72,19 +65,19 @@ public class FacebookService {
 	            dataToUpdate.setTimestamp(updatedData.getTimestamp());
 	        }
 	        if (updatedData.getContentType() != null) {
-	            dataToUpdate.setContentType(updatedData.getContentType());
+	            dataToUpdate.setPosttype(updatedData.getContentType());
 	        }
 	        if (updatedData.getImpressions() != 0) {
 	            dataToUpdate.setImpressions(updatedData.getImpressions());
 	        }
 	        if (updatedData.getViews() != 0) {
-	            dataToUpdate.setViews(updatedData.getViews());
+	            dataToUpdate.setReach(updatedData.getViews());
 	        }
 	        if (updatedData.getClicks() != 0) {
-	            dataToUpdate.setClicks(updatedData.getClicks());
+	            dataToUpdate.setTotalclicks(updatedData.getClicks());
 	        }
 	        if (updatedData.getLikes() != 0) {
-	            dataToUpdate.setLikes(updatedData.getLikes());
+	            dataToUpdate.setReactions(updatedData.getLikes());
 	        }
 	        if (updatedData.getComments() != 0) {
 	            dataToUpdate.setComments(updatedData.getComments());
@@ -92,12 +85,7 @@ public class FacebookService {
 	        if (updatedData.getShares() != 0) {
 	            dataToUpdate.setShares(updatedData.getShares());
 	        }
-	        if (updatedData.getEngagementrate() != 0) {
-	            dataToUpdate.setEngagementrate(updatedData.getEngagementrate());
-	        }
-	        if (updatedData.getCTR() != 0) {
-	            dataToUpdate.setCTR(updatedData.getCTR());
-	        }
+	        
 	        dataToUpdate.setPostId(postId);
 
 	        Facebook updatedEntity = facebookRepo.save(dataToUpdate);
@@ -109,7 +97,6 @@ public class FacebookService {
 
 
 
-	// Delete
 	// Delete
 	public void deleteFacebookData(int postId) {
 	    facebookRepo.deleteById(postId);

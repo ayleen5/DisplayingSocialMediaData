@@ -21,14 +21,14 @@ public class FacebookController {
     private FacebookService facebookService;
 
     // Create
-    @PostMapping("/create/")
+    @PostMapping("/create")
     public ResponseEntity<LoaderDTO> createFacebookData(@RequestBody LoaderDTO facebookData) {
     	LoaderDTO createdData = facebookService.createFacebookData(facebookData);
         return new ResponseEntity<>(createdData, HttpStatus.CREATED);
     }
 
     // Read
-    @GetMapping("/getall/")
+    @GetMapping("/getall")
     public ResponseEntity<List<LoaderDTO>> getAllFacebookData() {
         List<LoaderDTO> facebookDataList = facebookService.getAllFacebookData();
         return new ResponseEntity<>(facebookDataList, HttpStatus.OK);

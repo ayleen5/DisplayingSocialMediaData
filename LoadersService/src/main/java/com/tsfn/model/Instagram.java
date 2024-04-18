@@ -1,6 +1,5 @@
 package com.tsfn.model;
 
-import java.sql.Time;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -9,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -20,11 +20,11 @@ public class Instagram {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int postId;
 
-	private Time timestamp;
-	private String ContentType;
+	private LocalDateTime  timestamp;
+	private String Posttype;
 	private int Impressions;
-	private int Views;
-	private int Clicks;
+	private int Reach;
+	private int Saves;
 	private int likes;
 	private int comments;
 	private int shares;
@@ -36,15 +36,16 @@ public class Instagram {
 	private double Engagementrate;
 
 	@PrePersist
+	@PreUpdate
 	public void calculateMetrics() {
 		if (Impressions > 0) {
-			CTR = (double) Clicks / Impressions;
+			CTR = (double) Saves / Impressions;
 		} else {
 			CTR = 0.0;
 		}
 
-		if (Views > 0) {
-			Engagementrate = (double) (likes + comments + shares) / Views;
+		if (Reach > 0) {
+			Engagementrate = (double) (likes + comments + shares) / Reach;
 		} else {
 			Engagementrate = 0.0;
 		}

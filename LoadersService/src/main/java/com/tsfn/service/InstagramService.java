@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +22,12 @@ public class InstagramService {
 
 
 	private LoaderDTO convertEntityToDto(Instagram instagram){
-		modelMapper.getConfiguration()
-		.setMatchingStrategy(MatchingStrategies.LOOSE);
-		LoaderDTO instagramDTO = new LoaderDTO();
-		instagramDTO = modelMapper.map(instagram, LoaderDTO.class);
-		return instagramDTO;
+        return modelMapper.map(instagram, LoaderDTO.class);
+
 	}
 
 	private Instagram convertDtoToEntity(LoaderDTO loaderDTO) {
-		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-		Instagram instagram = modelMapper.map(loaderDTO, Instagram.class);
-		return instagram;
+		return modelMapper.map(loaderDTO, Instagram.class);
 	}
 
 
@@ -61,24 +55,26 @@ public class InstagramService {
 
 	// Update
 	public LoaderDTO updateInstagramData(int postId, LoaderDTO updatedData) {
+
 		Optional<Instagram> existingData = instagramRepo.findById(postId);
 		if (existingData.isPresent()) {
+
 			Instagram dataToUpdate = existingData.get();
 
 			if (updatedData.getTimestamp() != null) {
 				dataToUpdate.setTimestamp(updatedData.getTimestamp());
 			}
 			if (updatedData.getContentType() != null) {
-				dataToUpdate.setContentType(updatedData.getContentType());
+				dataToUpdate.setPosttype(updatedData.getContentType());
 			}
 			if (updatedData.getImpressions() != 0) {
 				dataToUpdate.setImpressions(updatedData.getImpressions());
 			}
 			if (updatedData.getViews() != 0) {
-				dataToUpdate.setViews(updatedData.getViews());
+				dataToUpdate.setReach(updatedData.getViews());
 			}
 			if (updatedData.getClicks() != 0) {
-				dataToUpdate.setClicks(updatedData.getClicks());
+				dataToUpdate.setSaves(updatedData.getClicks());
 			}
 			if (updatedData.getLikes() != 0) {
 				dataToUpdate.setLikes(updatedData.getLikes());
@@ -89,12 +85,8 @@ public class InstagramService {
 			if (updatedData.getShares() != 0) {
 				dataToUpdate.setShares(updatedData.getShares());
 			}
-			if (updatedData.getEngagementrate() != 0) {
-				dataToUpdate.setEngagementrate(updatedData.getEngagementrate());
-			}
-			if (updatedData.getCTR() != 0) {
-				dataToUpdate.setCTR(updatedData.getCTR());
-			}
+			
+			
 			dataToUpdate.setPostId(postId);
 
 

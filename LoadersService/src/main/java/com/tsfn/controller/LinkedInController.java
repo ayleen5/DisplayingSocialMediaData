@@ -26,14 +26,14 @@ public class LinkedInController {
     private LinkedInService linkedInService;
 	
 	// Create
-    @PostMapping("/create/")
+    @PostMapping("/create")
     public ResponseEntity<LinkedIn> createLinkedInData(@RequestBody LinkedIn linkedInData) {
         LinkedIn createdData = linkedInService.createLinkedInData(linkedInData);
         return new ResponseEntity<>(createdData, HttpStatus.CREATED);
     }
 
     // Read
-    @GetMapping("/getall/")
+    @GetMapping("/getall")
     public ResponseEntity<List<LinkedIn>> getAllLinkedInData() {
         List<LinkedIn> linkedInDataList = linkedInService.getAllLinkedInData();
         return new ResponseEntity<>(linkedInDataList, HttpStatus.OK);

@@ -16,38 +16,39 @@ import lombok.Data;
 @Data
 @Table(name = "instagram")
 public class Instagram {
+	
+	private LocalDateTime timestamp;
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int postId;
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private double postId;
 
-	private LocalDateTime  timestamp;
-	private String Posttype;
-	private int Impressions;
-	private int Reach;
-	private int Saves;
+	private String postType;
+	private int impressions;
+	private int reach;
+	private int saves;
+	@Column(name = "ctr")
+	private double ctr;
 	private int likes;
 	private int comments;
 	private int shares;
-
-	@Column(name = "ctr")
-	private double CTR;
-
+	
 	@Column(name = "engagement_rate")
-	private double Engagementrate;
+	private double engagementrate;
 
-	@PrePersist
-	@PreUpdate
-	public void calculateMetrics() {
-		if (Impressions > 0) {
-			CTR = (double) Saves / Impressions;
-		} else {
-			CTR = 0.0;
-		}
 
-		if (Reach > 0) {
-			Engagementrate = (double) (likes + comments + shares) / Reach;
-		} else {
-			Engagementrate = 0.0;
-		}
-	}
+//	@PrePersist
+//	public void calculateMetrics() {
+//		if (impressions > 0) {
+//			ctr = (double) saves / impressions;
+//		} else {
+//			ctr = 0.0;
+//		}
+//
+//		if (reach > 0) {
+//			engagementRate = (double) (likes + comments + shares) / reach;
+//		} else {
+//			engagementRate = 0.0;
+//		}
+//	}
 }

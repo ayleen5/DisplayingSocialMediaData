@@ -65,7 +65,7 @@ public class InstagramService {
 				dataToUpdate.setTimestamp(updatedData.getTimestamp());
 			}
 			if (updatedData.getContentType() != null) {
-				dataToUpdate.setPosttype(updatedData.getContentType());
+				dataToUpdate.setPostType(updatedData.getContentType());
 			}
 			if (updatedData.getImpressions() != 0) {
 				dataToUpdate.setImpressions(updatedData.getImpressions());

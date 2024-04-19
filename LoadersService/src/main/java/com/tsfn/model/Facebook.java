@@ -1,5 +1,6 @@
 package com.tsfn.model;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 
 
@@ -9,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -19,37 +21,34 @@ import lombok.Data;
 @Table(name = "facebook")
 public class Facebook {
 
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int postId;
-
-    private LocalDateTime timestamp;
-    private String postType;
-    private int impressions;
-    private int reach;
-    private int totalClicks;
-    private int reactions;
-    private int comments;
-    private int shares;
+    private LocalDateTime  Timestamp;
+    private String Posttype;
+    private int Impressions;
+    private int Reach;
+    private int Totalclicks;
+    private int Reactions;
+    private int Comments;
+    private int Shares;
+    private double CTR;
+    private double Engagementrate;
     
-    @Column(name = "ctr")
-    private double ctr;
-    
-    @Column(name = "engagement_rate")
-    private double engagementRate;
-    
-    @PrePersist
+	@PrePersist
+	@PreUpdate
     public void calculateMetrics() {
-        if (impressions > 0) {
-            ctr = (double) totalClicks / impressions;
+        if (Impressions > 0) {
+        	CTR = (double) Totalclicks / Impressions;
         } else {
-            ctr = 0.0;
+        	CTR = 0.0;
         }
         
-        if (reach > 0) {
-            engagementRate = (double) (reactions + comments + shares) / reach;
+        if (Reach > 0) {
+        	Engagementrate = (double) (Reactions + Comments + Shares) / Reach;
         } else {
-            engagementRate = 0.0;
+        	Engagementrate = 0.0;
         }
     }
     

@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -19,33 +20,34 @@ public class Instagram {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int postId;
 
-	private LocalDateTime timestamp;
-	private String postType;
-	private int impressions;
-	private int reach;
-	private int saves;
+	private LocalDateTime  timestamp;
+	private String Posttype;
+	private int Impressions;
+	private int Reach;
+	private int Saves;
 	private int likes;
 	private int comments;
 	private int shares;
 
 	@Column(name = "ctr")
-	private double ctr;
+	private double CTR;
 
 	@Column(name = "engagement_rate")
-	private double engagementRate;
+	private double Engagementrate;
 
 	@PrePersist
+	@PreUpdate
 	public void calculateMetrics() {
-		if (impressions > 0) {
-			ctr = (double) saves / impressions;
+		if (Impressions > 0) {
+			CTR = (double) Saves / Impressions;
 		} else {
-			ctr = 0.0;
+			CTR = 0.0;
 		}
 
-		if (reach > 0) {
-			engagementRate = (double) (likes + comments + shares) / reach;
+		if (Reach > 0) {
+			Engagementrate = (double) (likes + comments + shares) / Reach;
 		} else {
-			engagementRate = 0.0;
+			Engagementrate = 0.0;
 		}
 	}
 }

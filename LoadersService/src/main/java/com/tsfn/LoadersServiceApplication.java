@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 @OpenAPIDefinition
 public class LoadersServiceApplication {
 
+
 	public static void main(String[] args) {
 		SpringApplication.run(LoadersServiceApplication.class, args);
 	}

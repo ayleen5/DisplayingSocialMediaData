@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tsfn.model.Instagram;
+import com.tsfn.dto.LoaderDTO;
 import com.tsfn.service.InstagramService;
 
 
@@ -26,29 +26,29 @@ public class InstagramController {
 	private InstagramService instagramService;
 
 	@PostMapping("/create")
-    public ResponseEntity<Instagram> createInstagramData(@RequestBody Instagram instagramData) {
-		Instagram createdData = instagramService.createInstagramData(instagramData);
+    public ResponseEntity<LoaderDTO> createInstagramData(@RequestBody LoaderDTO instagramData) {
+		LoaderDTO createdData = instagramService.createInstagramEntityData(instagramData);
         return new ResponseEntity<>(createdData, HttpStatus.CREATED);
     }
 
     // Read
-    @GetMapping("/getall/")
-    public ResponseEntity<List<Instagram>> getAllFacebookData() {
-        List<Instagram> instagramDataList = instagramService.getAllInstagramData();
+    @GetMapping("/getall")
+    public ResponseEntity<List<LoaderDTO>> getAllFacebookData() {
+        List<LoaderDTO> instagramDataList = instagramService.getAllInstagramData();
         return new ResponseEntity<>(instagramDataList, HttpStatus.OK);
     }
 
     @GetMapping("/get{postId}")
-    public ResponseEntity<Instagram> getInstagramDataById(@RequestParam int postId) {
-        Optional<Instagram> instagramData = instagramService.getInstagramDataById(postId);
+    public ResponseEntity<LoaderDTO> getInstagramDataById(@RequestParam int postId) {
+        Optional<LoaderDTO> instagramData = instagramService.getInstagramDataById(postId);
         return instagramData.map(data -> new ResponseEntity<>(data, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Update
     @PutMapping("/update{postId}")
-    public ResponseEntity<Instagram> updateInstagramData(@RequestParam int postId, @RequestBody Instagram updatedData) {
-    	Instagram updatedInstagramData = instagramService.updateInstagramData(postId, updatedData);
+    public ResponseEntity<LoaderDTO> updateInstagramData(@RequestParam int postId, @RequestBody LoaderDTO updatedData) {
+    	LoaderDTO updatedInstagramData = instagramService.updateInstagramData(postId, updatedData);
         if (updatedInstagramData != null) {
             return new ResponseEntity<>(updatedInstagramData, HttpStatus.OK);
         } else {

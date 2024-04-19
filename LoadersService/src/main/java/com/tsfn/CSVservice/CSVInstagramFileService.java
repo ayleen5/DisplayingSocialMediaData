@@ -61,9 +61,9 @@ public class CSVInstagramFileService {
             		}
                 	
                 	if (reach > 0) {
-                		entity.setEngagementRate((double) (likes + comments + shares) / reach);
+                		entity.setEngagementrate((double) (likes + comments + shares) / reach);
             		} else {
-            			entity.setEngagementRate( 0.0);
+            			entity.setEngagementrate( 0.0);
             		}
                     
                 	

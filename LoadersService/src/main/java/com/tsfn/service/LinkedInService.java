@@ -26,57 +26,58 @@ public class LinkedInService {
  	}
  	
  	// Delete
-    public void deleteLinkedInData(int postId) {
-        linkedInRepo.deleteById(postId);
+    public void deleteLinkedInData(String postLink) {
+        linkedInRepo.findById(postLink);
     }
  	
- 	public Optional<LinkedIn> getLinkedInDataById(int postId) {
-		return linkedInRepo.findById(postId);
+ 	public Optional<LinkedIn> getLinkedInDataById(String postLink) {
+		return linkedInRepo.findById(postLink);
 	}
  	
+ 	// the update need to be fixed the linkedIn was not foe linedIn
  	// Update
-    public LinkedIn updateLinkedInData(int postId, LinkedIn updatedData) {
-        Optional<LinkedIn> existingData = linkedInRepo.findById(postId);
-        if (existingData.isPresent()) {
-            LinkedIn dataToUpdate = existingData.get();
-            
-            if (updatedData.getTimestamp() != null) {
-                dataToUpdate.setTimestamp(updatedData.getTimestamp());
-            }
-            if (updatedData.getPostType() != null) {
-                dataToUpdate.setPostType(updatedData.getPostType());
-            }
-            if (updatedData.getImpressions() != 0) {
-                dataToUpdate.setImpressions(updatedData.getImpressions());
-            }
-            if (updatedData.getReach() != 0) {
-                dataToUpdate.setReach(updatedData.getReach());
-            }
-            if (updatedData.getTotalClicks() != 0) {
-                dataToUpdate.setTotalClicks(updatedData.getTotalClicks());
-            }
-            if (updatedData.getReactions() != 0) {
-                dataToUpdate.setReactions(updatedData.getReactions());
-            }
-            if (updatedData.getComments() != 0) {
-                dataToUpdate.setComments(updatedData.getComments());
-            }
-            if (updatedData.getShares() != 0) {
-                dataToUpdate.setShares(updatedData.getShares());
-            }
-            if (updatedData.getEngagementRate() != 0) {
-                dataToUpdate.setEngagementRate(updatedData.getEngagementRate());
-            }
-            if (updatedData.getCtr() != 0) {
-                dataToUpdate.setCtr(updatedData.getCtr());
-            }
-            dataToUpdate.setPostId(postId);
-            
-            return linkedInRepo.save(dataToUpdate);
-        } else {
-            return null;
-        }
-    }
+//    public LinkedIn updateLinkedInData(int postId, LinkedIn updatedData) {
+//        Optional<LinkedIn> existingData = linkedInRepo.findById(postId);
+//        if (existingData.isPresent()) {
+//            LinkedIn dataToUpdate = existingData.get();
+//            
+//            if (updatedData.getTimestamp() != null) {
+//                dataToUpdate.setTimestamp(updatedData.getTimestamp());
+//            }
+//            if (updatedData.getPostType() != null) {
+//                dataToUpdate.setPostType(updatedData.getPostType());
+//            }
+//            if (updatedData.getImpressions() != 0) {
+//                dataToUpdate.setImpressions(updatedData.getImpressions());
+//            }
+//            if (updatedData.getReach() != 0) {
+//                dataToUpdate.setReach(updatedData.getReach());
+//            }
+//            if (updatedData.getTotalClicks() != 0) {
+//                dataToUpdate.setTotalClicks(updatedData.getTotalClicks());
+//            }
+//            if (updatedData.getReactions() != 0) {
+//                dataToUpdate.setReactions(updatedData.getReactions());
+//            }
+//            if (updatedData.getComments() != 0) {
+//                dataToUpdate.setComments(updatedData.getComments());
+//            }
+//            if (updatedData.getShares() != 0) {
+//                dataToUpdate.setShares(updatedData.getShares());
+//            }
+//            if (updatedData.getEngagementRate() != 0) {
+//                dataToUpdate.setEngagementRate(updatedData.getEngagementRate());
+//            }
+//            if (updatedData.getCtr() != 0) {
+//                dataToUpdate.setCtr(updatedData.getCtr());
+//            }
+//            dataToUpdate.setPostId(postId);
+//            
+//            return linkedInRepo.save(dataToUpdate);
+//        } else {
+//            return null;
+//        }
+//    }
  	
  	
  	

@@ -15,39 +15,43 @@ import lombok.Data;
 @Data
 @Table(name = "linkedIn")
 public class LinkedIn {
+	
+	
+	private LocalDateTime timestamp;
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int postId;
-
-    private LocalDateTime timestamp;
-    private String postType;
+	private String postLink;
+	private String contentType;
     private int impressions;
-    private int reach;
-    private int totalClicks;
-    private int reactions;
+    private int vEO_oV; // viewsExcludingOffsite + offsiteViews
+    private int clicks;
+    private double clickThroughRate;
+    private int likes;
     private int comments;
-    private int shares;
-    
-    @Column(name = "ctr")
-    private double ctr;
-    
-    @Column(name = "engagement_rate")
+    private int reposts;
     private double engagementRate;
     
-    @PrePersist
-    public void calculateMetrics() {
-        if (impressions > 0) {
-            ctr = (double) totalClicks / impressions;
-        } else {
-            ctr = 0.0;
-        }
-        
-        if (reach > 0) {
-            engagementRate = (double) (reactions + comments + shares) / reach;
-        } else {
-            engagementRate = 0.0;
-        }
-    }
+   
+    
+//    @Column(name = "ctr")
+//    private double ctr;
+//    
+//    @Column(name = "engagement_rate")
+//    private double engagementRate;
+//    
+//    @PrePersist
+//    public void calculateMetrics() {
+//        if (impressions > 0) {
+//            ctr = (double) totalClicks / impressions;
+//        } else {
+//            ctr = 0.0;
+//        }
+//        
+//        if (reach > 0) {
+//            engagementRate = (double) (reactions + comments + shares) / reach;
+//        } else {
+//            engagementRate = 0.0;
+//        }
+//    }
 
 
 }

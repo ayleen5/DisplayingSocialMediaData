@@ -5,6 +5,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.tsfn.model.Facebook;
 import com.tsfn.model.Instagram;
 import com.tsfn.model.LoaderDTO;
 @Configuration
@@ -48,6 +49,34 @@ public class ModelMapperConfig {
             }
             return destination;
         });
+        
+        
+     // Mapping from Facebook to LoaderDTO
+        modelMapper.addMappings(new PropertyMap<Facebook, LoaderDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getId()); // Exclude mapping for id
+                map().setPostId(source.getPostId());
+                map().setContentType(source.getPostType());
+                map().setImpressions(source.getImpressions());
+                
+                map().setViews(0);
+                map().setClicks(0);
+                map().setCTR(0);
+                // Reach not found in the file
+                // Total Clicks not found in the file
+            	// ctr: we do not have click
+                
+                map().setLikes(source.getReactions()); 
+                map().setComments(source.getComments());
+                map().setShares(source.getShares());
+                map().setEngagementrate(0);
+               // map().setTimestamp(source.getPublishTime());
+                
+            }
+        });
+
+
 
         return modelMapper;
     }

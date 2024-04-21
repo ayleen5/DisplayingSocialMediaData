@@ -1,65 +1,88 @@
 package com.tsfn.controller;
 
+
+
+
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tsfn.dto.LoaderDTO;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.tsfn.message.ResponseMessage;
+import com.tsfn.model.LoaderDTO;
 import com.tsfn.service.InstagramService;
 
 
+
 @RestController
-@RequestMapping("/instagram")
+@RequestMapping("/instagramFiles")
 public class InstagramController {
-	@Autowired
-	private InstagramService instagramService;
 
-	@PostMapping("/create")
-    public ResponseEntity<LoaderDTO> createInstagramData(@RequestBody LoaderDTO instagramData) {
-		LoaderDTO createdData = instagramService.createInstagramEntityData(instagramData);
-        return new ResponseEntity<>(createdData, HttpStatus.CREATED);
-    }
-
-    // Read
-    @GetMapping("/getall")
-    public ResponseEntity<List<LoaderDTO>> getAllFacebookData() {
-        List<LoaderDTO> instagramDataList = instagramService.getAllInstagramData();
-        return new ResponseEntity<>(instagramDataList, HttpStatus.OK);
-    }
-
-    @GetMapping("/get{postId}")
-    public ResponseEntity<LoaderDTO> getInstagramDataById(@RequestParam int postId) {
-        Optional<LoaderDTO> instagramData = instagramService.getInstagramDataById(postId);
-        return instagramData.map(data -> new ResponseEntity<>(data, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // Update
-    @PutMapping("/update{postId}")
-    public ResponseEntity<LoaderDTO> updateInstagramData(@RequestParam int postId, @RequestBody LoaderDTO updatedData) {
-    	LoaderDTO updatedInstagramData = instagramService.updateInstagramData(postId, updatedData);
-        if (updatedInstagramData != null) {
-            return new ResponseEntity<>(updatedInstagramData, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Autowired
+    private InstagramService csvService;
+    String message = "";
+    @PostMapping("/upload")
+    public ResponseEntity<ResponseMessage> uploadCsv() {
+        try {
+        	
+        	MultipartFile file = null;
+        	if (file.isEmpty())
+            {
+            	throw new Exception ("file is empty!");
+            }
+        	csvService.processCsvInstagramFile(file);
+            message = "CSV file uploaded and processed successfully.";
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            		.body(new ResponseMessage("An error occurred while processing the CSV file." + e.getMessage()));
         }
     }
+    
+    @GetMapping("/getAll")
+	  public ResponseEntity<List<LoaderDTO>> getAllInstagramFiles() {
+	    try {
+	    	List<LoaderDTO> instagramFiles = csvService.getAllInstagramFiles();
+            return instagramFiles.isEmpty()
+                    ? ResponseEntity.noContent().build()
+                    : ResponseEntity.ok(instagramFiles);
+			/*
+			 * List<InstagramFile> instagramFiles = csvService.getAllInstagramFiles();
+			 * 
+			 * if (instagramFiles.isEmpty()) { return new
+			 * ResponseEntity<>(HttpStatus.NO_CONTENT); }
+			 * 
+			 * return new ResponseEntity<>(instagramFiles, HttpStatus.OK);
+			 */
+	    } catch (Exception e) {
+	      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	  }
+    
+    @DeleteMapping("/deleteAll")
+	  public ResponseEntity<?> deleteAllInstagramFiles() {
+	    try {
+	    	int deletedCount = csvService.deleteAllInstagramFiles();
+	        if (deletedCount > 0) {
+	            return ResponseEntity.ok("Deleted " + deletedCount + " Instagram files.");
+	        } else {
+	            return ResponseEntity.ok("No Instagram files found to delete.");
+	        }
+	    } catch (Exception e) {
+	      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	  }
+    
 
-    // Delete
-    @DeleteMapping("/delete{postId}")
-    public ResponseEntity<Void> deleteInstagramData(@RequestParam int postId) {
-        instagramService.deleteInstagramData(postId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }

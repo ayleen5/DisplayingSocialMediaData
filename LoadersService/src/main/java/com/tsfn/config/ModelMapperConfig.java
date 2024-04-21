@@ -5,85 +5,48 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.tsfn.dto.LoaderDTO;
 import com.tsfn.model.Instagram;
-import com.tsfn.model.Facebook;
-
+import com.tsfn.model.LoaderDTO;
 @Configuration
 public class ModelMapperConfig {
 
     @Bean
-    public ModelMapper modelMapper() {
+    ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         
+        // Mapping from Instagram to LoaderDTO
         modelMapper.addMappings(new PropertyMap<Instagram, LoaderDTO>() {
             @Override
             protected void configure() {
-
-                map().setTimestamp(source.getTimestamp());
-                map().setPostID(source.getPostId());
+                skip(destination.getId()); // Exclude mapping for id
+                map().setPostId(source.getPostId());
+                map().setContentType(source.getPostType());
                 map().setImpressions(source.getImpressions());
-                map().setCTR(source.getCTR());
-                map().setContentType(source.getPosttype()); 
                 map().setViews(source.getReach());
-                map().setClicks(source.getSaves()); 
-                map().setLikes(source.getLikes());
+                map().setClicks(source.getSaves());
+                map().setLikes(source.getLikes()); 
                 map().setComments(source.getComments());
                 map().setShares(source.getShares());
-                map().setEngagementrate(source.getEngagementrate());
-
-            }
-        });
-        modelMapper.addMappings(new PropertyMap<LoaderDTO, Instagram>() {
-            @Override
-            protected void configure() {
-                map().setTimestamp(source.getTimestamp());
-                map().setPostId(source.getPostID());
-                map().setImpressions(source.getImpressions());
-                map().setCTR(source.getCTR());
-                map().setPosttype(source.getContentType()); 
-                map().setReach(source.getViews());
-                map().setSaves(source.getClicks());     
-                map().setLikes(source.getLikes());
-                map().setComments(source.getComments());
-                map().setShares(source.getShares());
-                map().setEngagementrate(source.getEngagementrate());
+               // map().setTimestamp(source.getPublishTime());
+                
             }
         });
 
-
-        modelMapper.addMappings(new PropertyMap<Facebook, LoaderDTO>() {
-           @Override
-           protected void configure() {
-        	   map().setTimestamp(source.getTimestamp());
-               map().setPostID(source.getPostId());
-               map().setImpressions(source.getImpressions());
-               map().setCTR(source.getCTR());
-               map().setContentType(source.getPosttype()); 
-               map().setViews(source.getReach());
-               map().setClicks(source.getTotalclicks()); // שנה את הפונקציה לקריאה לשדה המתאים במודל, כלומר getSaves()
-               map().setLikes(source.getReactions());
-               map().setComments(source.getComments());
-               map().setShares(source.getShares());
-               map().setEngagementrate(source.getEngagementrate());
-
-           }
-       });
-        modelMapper.addMappings(new PropertyMap<LoaderDTO, Facebook>() {
-            @Override
-            protected void configure() {
-                map().setTimestamp(source.getTimestamp());
-                map().setPostId(source.getPostID());
-                map().setImpressions(source.getImpressions());
-                map().setCTR(source.getCTR());
-                map().setPosttype(source.getContentType()); 
-                map().setReach(source.getViews());
-                map().setTotalclicks(source.getClicks());     
-                map().setReactions(source.getLikes());
-                map().setComments(source.getComments());
-                map().setShares(source.getShares());
-                map().setEngagementrate(source.getEngagementrate());
+        // Post-mapping operations
+        modelMapper.getTypeMap(Instagram.class, LoaderDTO.class).setPostConverter(context -> {
+            Instagram source = context.getSource();
+            LoaderDTO destination = context.getDestination();
+            if (source.getImpressions() > 0 && source.getSaves() > 0) {
+                destination.setCTR(source.getSaves() / (double) source.getImpressions());
+            } else {
+                destination.setCTR(0);
             }
+            if (source.getReach() > 0) {
+                destination.setEngagementrate(source.getLikes() / (double) source.getReach());
+            } else {
+                destination.setEngagementrate(0);
+            }
+            return destination;
         });
 
         return modelMapper;

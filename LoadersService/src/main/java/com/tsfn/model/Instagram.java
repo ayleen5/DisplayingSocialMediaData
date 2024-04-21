@@ -1,54 +1,29 @@
 package com.tsfn.model;
 
 import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
 import lombok.Data;
 
-@Entity
 @Data
-@Table(name = "instagram")
 public class Instagram {
-	
-	private LocalDateTime timestamp;
-	
-	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private double postId;
 
-	private String postType;
-	private int impressions;
-	private int reach;
-	private int saves;
-	@Column(name = "ctr")
-	private double ctr;
-	private int likes;
-	private int comments;
-	private int shares;
-	
-	@Column(name = "engagement_rate")
-	private double engagementrate;
+	private String postId;
+	private String accountId;
+	private String accountUsername;
+	private String accountName;
+	private String description;
+	private double durationSec;
+	private LocalDateTime publishTime;	
+	private String permalink;	
+	private String postType;	
+	private String dataComment;	
+	private String date;	
+	private double impressions;	
+	private double reach;	
+	private double shares;	
+	private double follows;	
+	private double likes;	
+	private double comments;	
+	private double saves;	
+	private double plays;	
 
-
-//	@PrePersist
-//	public void calculateMetrics() {
-//		if (impressions > 0) {
-//			ctr = (double) saves / impressions;
-//		} else {
-//			ctr = 0.0;
-//		}
-//
-//		if (reach > 0) {
-//			engagementRate = (double) (likes + comments + shares) / reach;
-//		} else {
-//			engagementRate = 0.0;
-//		}
-//	}
 }

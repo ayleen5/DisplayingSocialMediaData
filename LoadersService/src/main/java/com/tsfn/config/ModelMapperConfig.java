@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.tsfn.model.Facebook;
 import com.tsfn.model.Instagram;
+import com.tsfn.model.LinkedIn;
 import com.tsfn.model.LoaderDTO;
 @Configuration
 public class ModelMapperConfig {
@@ -15,7 +16,7 @@ public class ModelMapperConfig {
     ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         
-        // Mapping from Instagram to LoaderDTO
+//         Mapping from Instagram to LoaderDTO
         modelMapper.addMappings(new PropertyMap<Instagram, LoaderDTO>() {
             @Override
             protected void configure() {
@@ -51,6 +52,7 @@ public class ModelMapperConfig {
         });
         
         
+
      // Mapping from Facebook to LoaderDTO
         modelMapper.addMappings(new PropertyMap<Facebook, LoaderDTO>() {
             @Override
@@ -71,11 +73,25 @@ public class ModelMapperConfig {
                 map().setComments(source.getComments());
                 map().setShares(source.getShares());
                 map().setEngagementrate(0);
+     
+              // Mapping from LinkedIn to LoaderDTO
+        modelMapper.addMappings(new PropertyMap<LinkedIn, LoaderDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getId()); // Exclude mapping for id
+                map().setPostId(source.getPostLink());
+                map().setContentType(source.getContentType());
+                map().setImpressions(source.getImpressions());
+                map().setViews(0.0);
+                map().setClicks(source.getClicks());
+                map().setCTR(source.getCTR());
+                map().setLikes(source.getLikes()); 
+                map().setComments(source.getComments());
+                map().setShares(source.getReposts());
                // map().setTimestamp(source.getPublishTime());
                 
             }
         });
-
 
 
         return modelMapper;

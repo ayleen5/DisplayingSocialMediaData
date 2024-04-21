@@ -73,6 +73,8 @@ public class ModelMapperConfig {
                 map().setComments(source.getComments());
                 map().setShares(source.getShares());
                 map().setEngagementrate(0);
+            }
+        });
      
               // Mapping from LinkedIn to LoaderDTO
         modelMapper.addMappings(new PropertyMap<LinkedIn, LoaderDTO>() {
@@ -92,9 +94,10 @@ public class ModelMapperConfig {
                 
             }
         });
+    
 
 
         return modelMapper;
-    }
+    
+            }
 }
-

@@ -17,7 +17,7 @@ public class LoaderDTO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id ;
 	private String postId;
-	private LocalDateTime  timestamp;
+//	private LocalDateTime  timestamp;
 	private String contentType;
 	private double impressions;
 	private double views;

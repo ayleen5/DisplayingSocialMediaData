@@ -3,6 +3,7 @@ package com.tsfn.model;
 import java.sql.Date;
 import lombok.Data;
  
+
 @Data
 public class LinkedIn {
  

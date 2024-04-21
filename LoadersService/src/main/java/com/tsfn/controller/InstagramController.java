@@ -32,10 +32,10 @@ public class InstagramController {
     private InstagramService csvService;
     String message = "";
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadCsv() {
+    public ResponseEntity<ResponseMessage> uploadCsv(@RequestParam("file") MultipartFile file) {
         try {
         	
-        	MultipartFile file = null;
+        	
         	if (file.isEmpty())
             {
             	throw new Exception ("file is empty!");

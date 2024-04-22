@@ -10,6 +10,7 @@ public class Facebook {
 	private String postId;
 	private String pageId;
 	private String pageName;
+	private String title;
  	private String description;
 	private double durationSec;
 	private LocalDateTime publishTime;	
@@ -24,15 +25,17 @@ public class Facebook {
 	private String dataComment;	
 	private LocalDateTime date;	
 	private double impressions;	
-	private double secondVideoViews;	
-	private double minuteVideoViews;	
-	private double secondViewers;	
-	private double minuteViewers;	
-	private double secondVideoViewsFromBoostedPosts;	
-	private double secondVideoViewsFromOrganicPosts;	
-	private double reactions;//	comments and Shares
-	private double comments;//	comments and Shares
+	private double reach;
+	private String impressionsUnique_User;
+	private double reactionsCommentsShares;
+	private double reactions;
+	private double comments;
 	private double shares;
+	private double totalClicks;
+	private double otherClicks;
+	private double photoClick; //Matched Audience Targeting Consumption
+	private double linkClick;
+	private double negativeFeedback;// from users: Hide all
 	private double secondsViewed;
 	private double averageSecondsViewed;
 	private double estimatedEarnings;// Estimated earnings (USD)

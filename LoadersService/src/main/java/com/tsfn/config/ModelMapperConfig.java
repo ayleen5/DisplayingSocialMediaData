@@ -62,18 +62,32 @@ public class ModelMapperConfig {
                 map().setContentType(source.getPostType());
                 map().setImpressions(source.getImpressions());
                 
-                map().setViews(0);
-                map().setClicks(0);
-                map().setCTR(0);
-                // Reach not found in the file
-                // Total Clicks not found in the file
-            	// ctr: we do not have click
+                map().setViews(source.getReach());
+                map().setClicks(source.getTotalClicks());
                 
                 map().setLikes(source.getReactions()); 
                 map().setComments(source.getComments());
                 map().setShares(source.getShares());
-                map().setEngagementrate(0);
+                
+                
+                
             }
+        });
+        
+     // Post-mapping operations
+        modelMapper.getTypeMap(Facebook.class, LoaderDTO.class).setPostConverter(context -> {
+            Facebook source = context.getSource();
+            LoaderDTO destination = context.getDestination();
+            if( source.getImpressions() == 0)
+            	destination.setCTR(0);
+            else
+            	destination.setCTR(source.getTotalClicks()/ source.getImpressions());
+            if( source.getReach() == 0)
+            	destination.setEngagementrate(0);
+            else
+            	destination.setEngagementrate(source.getReactionsCommentsShares()/ source.getReach());
+           
+            return destination;
         });
      
               // Mapping from LinkedIn to LoaderDTO
@@ -90,6 +104,7 @@ public class ModelMapperConfig {
                 map().setLikes(source.getLikes()); 
                 map().setComments(source.getComments());
                 map().setShares(source.getReposts());
+                map().setEngagementrate(source.getEngagementRate());
                // map().setTimestamp(source.getPublishTime());
                 
             }

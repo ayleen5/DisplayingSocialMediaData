@@ -7,4 +7,7 @@ import com.tsfn.model.Action;
 
 public interface ActionRepository extends JpaRepository<Action, Integer> {
 
+
+ 
+
 }

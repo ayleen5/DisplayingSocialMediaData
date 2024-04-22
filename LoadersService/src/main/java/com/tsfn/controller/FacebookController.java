@@ -23,22 +23,36 @@ public class FacebookController {
 
     @Autowired
     private FacebookService facebookService;
-
+    private static final String CSV_FILE_PATH = "C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files";
+    
+    
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadCsv(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ResponseMessage> uploadCsv() {
         try {
-            if (file.isEmpty()) {
-                throw new Exception("File is empty!");
-            }
-            facebookService.processCsvFacebookFile(file);
-            String message = "CSV file uploaded and processed successfully.";
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+        	facebookService.processCsvFacebookFile(CSV_FILE_PATH);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("CSV files uploaded and processed successfully."));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage("An error occurred while processing the CSV file. " + e.getMessage()));
+                    .body(new ResponseMessage("An error occurred while processing the CSV files: " + e.getMessage()));
         }
     }
+
+//    @PostMapping("/upload")
+//    public ResponseEntity<ResponseMessage> uploadCsv(@RequestParam("file") MultipartFile file) {
+//        try {
+//            if (file.isEmpty()) {
+//                throw new Exception("File is empty!");
+//            }
+//            facebookService.processCsvFacebookFile(file);
+//            String message = "CSV file uploaded and processed successfully.";
+//            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body(new ResponseMessage("An error occurred while processing the CSV file. " + e.getMessage()));
+//        }
+//    }
 
     @GetMapping("/getAll")
     public ResponseEntity<List<LoaderDTO>> getAllFacebookFiles() {

@@ -1,5 +1,7 @@
 package com.tsfn.config;
 
+import java.time.LocalDateTime;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +31,8 @@ public class ModelMapperConfig {
                 map().setLikes(source.getLikes()); 
                 map().setComments(source.getComments());
                 map().setShares(source.getShares());
-               // map().setTimestamp(source.getPublishTime());
+                LocalDateTime t = LocalDateTime.now();
+                map().setTimestamp(t);
                 
             }
         });

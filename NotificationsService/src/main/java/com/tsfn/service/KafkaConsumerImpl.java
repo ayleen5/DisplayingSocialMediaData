@@ -36,7 +36,7 @@ public class KafkaConsumerImpl {
         String via = parts[0];
         String to = parts[1];
         String notification = parts[2];
-
+     
         switch (via) {
             case "sms"://i need to do set here 
                 smsService.sendSms(to, notification);
@@ -45,8 +45,7 @@ public class KafkaConsumerImpl {
                 emailNotificationService.sendNotification(to, notification);
                 break;
             case "whatsapp":
-                NotificatioTwilio whatsapp = new NotificatioTwilio(to, notification);
-                whatsappService.sendWhatsAppMessage(whatsapp);
+                whatsappService.sendWhatsAppMessage(to,notification);
                 break;
             default:
                 System.out.println("Unsupported 'via' type: " + via);

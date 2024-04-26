@@ -17,6 +17,7 @@ public class KafkaActionProducerImpl {
 	    public void sendMessage(Action action) {
 	        // Serialize Action object to JSON string
 	        String actionJson = new Gson().toJson(action);
+	        System.out.println("KafkaTemplat ____________KafkaTemplat");
 	        kafkaTemplate.send("ActionTopic", actionJson);
 	    }
 

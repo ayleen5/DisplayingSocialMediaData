@@ -56,7 +56,7 @@ public final class ActionScheduler implements Runnable, InitializingBean, Dispos
             if (scheduler == null || scheduler.isShutdown()) {
                 scheduler = Executors.newScheduledThreadPool(1);
             }
-            scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS); // Schedule to run every 60 seconds
+            scheduler.scheduleAtFixedRate(this, 0, 60, TimeUnit.SECONDS); // Schedule to run every 60 seconds
             running = true;
             System.out.println("ActionScheduler thread is running.");
             return true;
@@ -71,7 +71,7 @@ public final class ActionScheduler implements Runnable, InitializingBean, Dispos
         for(Action action: actions) {
         	System.out.println(action.getName());
         	System.out.println("BEFORE sending a message from Action");
-        	kafkaActionProducer.sendMessage(action); // Send list of actions to Kafka topic
+        	kafkaActionProducer.sendMessage(action); // Send one action to Kafka topic
             System.out.println("BEFORE sending a message from Action");
         }
         

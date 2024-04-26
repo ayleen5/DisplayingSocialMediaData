@@ -1,4 +1,4 @@
-package com.tsfn.model;
+package com.tsfn.controller.client.Loader;
 
 import java.time.LocalDateTime;
 
@@ -9,15 +9,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity
+
 @Data
-@Table(name = "loaderDTO")
-public class LoaderDTO {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id ;
+
+public class Loader {
+	
+	private int id;
 	private String postId;
-//	private LocalDateTime  timestamp;
 	private String contentType;
 	private double impressions;
 	private double views;
@@ -28,6 +26,8 @@ public class LoaderDTO {
 	private double shares;
 	private double engagementrate;
 	
-	}
+	private String accountLoader;
+	private LocalDateTime timestamp; 
+	
 
-
+}

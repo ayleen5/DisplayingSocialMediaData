@@ -15,8 +15,8 @@ import com.tsfn.repository.MetricRepository;
 @Component
 public final class JobsWorkerScheduler implements Runnable, InitializingBean, DisposableBean {
 
-    @Autowired
-    private MetricRepository metricRepository;
+//    @Autowired
+//    private MetricRepository metricRepository;
  
     private volatile boolean running;  // Use volatile to ensure visibility across threads
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -57,10 +57,10 @@ public final class JobsWorkerScheduler implements Runnable, InitializingBean, Di
 
     @Override
     public void run() {
-        List<Metric> actions = metricRepository.findAll();
-        actions.forEach(action -> {
-            System.out.println("Performing action: " + action.getName());
-        });
+//        List<Metric> mertics = metricRepository.findAll();
+//        mertics.forEach(metric -> {
+//            System.out.println("Performing action: " + metric.getName());
+//        });
     }
 
     @Override

@@ -1,0 +1,5 @@
+twilio:
+  account_sid: ACe6d14720ea132f82fdab9f62f46581e7
+  auth_token: c526a0c2c615509b36bcde0c0e74fe05
+  trial_number: +12563302187
+  whatsapp_number: +14155238886

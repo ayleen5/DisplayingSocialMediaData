@@ -19,22 +19,26 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.tsfn.model.LoaderDTO;
-import com.tsfn.service.FacebookService;
-import com.tsfn.service.InstagramService;
-import com.tsfn.service.LinkedInService;
+import com.tsfn.model.Loader;
+//import com.tsfn.service.FacebookService;
+//import com.tsfn.service.InstagramService;
+//import com.tsfn.service.LinkedInService;
+import com.tsfn.service.LoaderService;
 
 @Component
 public final class FileFetcherScheduler implements Runnable, InitializingBean, DisposableBean {
 
+//	@Autowired
+//	private FacebookService facebookService;
+//
+//	@Autowired
+//	private InstagramService instagramService;
+//
+//	@Autowired
+//	private LinkedInService linkedinService;
+	
 	@Autowired
-	private FacebookService facebookService;
-
-	@Autowired
-	private InstagramService instagramService;
-
-	@Autowired
-	private LinkedInService linkedinService;
+	private LoaderService loaderService;
 
 	// Maintain a map to track file timestamps
 	private Map<String, Instant> fileTimestamps = new HashMap<>();
@@ -48,7 +52,7 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 	public boolean start() {
 		if (!running) {
 			running = true;
-			scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS); // Fetch files every 15 seconds
+			scheduler.scheduleAtFixedRate(this, 0, 500, TimeUnit.SECONDS); // Fetch files every 15 seconds
 			return true;
 		}
 		return false;
@@ -93,13 +97,13 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 //				}
 //			}
 
-		instagramService.processCsvInstagramFile(
+		loaderService.processCsvInstagramFile(
 				"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\instagram");
 
-		facebookService.processCsvFacebookFile(
+		loaderService.processCsvFacebookFile(
 				"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\facebook");
 
-		linkedinService.processCsvLinkedInFile(
+		loaderService.processCsvLinkedInFile(
 				"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\linkedin");
 
 //		} catch (IOException e) {

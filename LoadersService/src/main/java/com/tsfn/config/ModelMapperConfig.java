@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import com.tsfn.model.Facebook;
 import com.tsfn.model.Instagram;
 import com.tsfn.model.LinkedIn;
-import com.tsfn.model.LoaderDTO;
+import com.tsfn.model.Loader;
 @Configuration
 public class ModelMapperConfig {
 
@@ -19,7 +19,7 @@ public class ModelMapperConfig {
         ModelMapper modelMapper = new ModelMapper();
         
 //         Mapping from Instagram to LoaderDTO
-        modelMapper.addMappings(new PropertyMap<Instagram, LoaderDTO>() {
+        modelMapper.addMappings(new PropertyMap<Instagram, Loader>() {
             @Override
             protected void configure() {
                 skip(destination.getId()); // Exclude mapping for id
@@ -38,9 +38,9 @@ public class ModelMapperConfig {
         });
 
         // Post-mapping operations
-        modelMapper.getTypeMap(Instagram.class, LoaderDTO.class).setPostConverter(context -> {
+        modelMapper.getTypeMap(Instagram.class, Loader.class).setPostConverter(context -> {
             Instagram source = context.getSource();
-            LoaderDTO destination = context.getDestination();
+            Loader destination = context.getDestination();
             if (source.getImpressions() > 0 && source.getSaves() > 0) {
                 destination.setCTR(source.getSaves() / (double) source.getImpressions());
             } else {
@@ -57,7 +57,7 @@ public class ModelMapperConfig {
         
 
      // Mapping from Facebook to LoaderDTO
-        modelMapper.addMappings(new PropertyMap<Facebook, LoaderDTO>() {
+        modelMapper.addMappings(new PropertyMap<Facebook, Loader>() {
             @Override
             protected void configure() {
                 skip(destination.getId()); // Exclude mapping for id
@@ -78,9 +78,9 @@ public class ModelMapperConfig {
         });
         
      // Post-mapping operations
-        modelMapper.getTypeMap(Facebook.class, LoaderDTO.class).setPostConverter(context -> {
+        modelMapper.getTypeMap(Facebook.class, Loader.class).setPostConverter(context -> {
             Facebook source = context.getSource();
-            LoaderDTO destination = context.getDestination();
+            Loader destination = context.getDestination();
             if( source.getImpressions() == 0)
             	destination.setCTR(0);
             else
@@ -94,7 +94,7 @@ public class ModelMapperConfig {
         });
      
               // Mapping from LinkedIn to LoaderDTO
-        modelMapper.addMappings(new PropertyMap<LinkedIn, LoaderDTO>() {
+        modelMapper.addMappings(new PropertyMap<LinkedIn, Loader>() {
             @Override
             protected void configure() {
                 skip(destination.getId()); // Exclude mapping for id

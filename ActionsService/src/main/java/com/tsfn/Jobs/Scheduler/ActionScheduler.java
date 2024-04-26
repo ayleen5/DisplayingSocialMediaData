@@ -6,16 +6,27 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsfn.model.Action;
 import com.tsfn.repository.ActionRepository;
+import com.tsfn.service.KafkaActionProducerImpl;
 
 @Component
 public final class ActionScheduler implements Runnable, InitializingBean, DisposableBean {
 
     @Autowired
     private ActionRepository actionRepository;
- 
+    
+    @Autowired
+    private KafkaActionProducerImpl kafkaActionProducer;
+    
+//    @Autowired
+//    private KafkaTemplate<String, String> kafkaTemplate;
+// 
     private volatile boolean running;  // Use volatile to ensure visibility across threads
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -45,7 +56,7 @@ public final class ActionScheduler implements Runnable, InitializingBean, Dispos
             if (scheduler == null || scheduler.isShutdown()) {
                 scheduler = Executors.newScheduledThreadPool(1);
             }
-            scheduler.scheduleAtFixedRate(this, 0, 60, TimeUnit.SECONDS); // Schedule to run every 60 seconds
+            scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS); // Schedule to run every 60 seconds
             running = true;
             System.out.println("ActionScheduler thread is running.");
             return true;
@@ -55,10 +66,24 @@ public final class ActionScheduler implements Runnable, InitializingBean, Dispos
 
     @Override
     public void run() {
+
         List<Action> actions = actionRepository.findAll();
-        actions.forEach(action -> {
-            System.out.println("Performing action: " + action.getName());
-        });
+        for(Action action: actions) {
+        	System.out.println(action.getName());
+        	System.out.println("BEFORE sending a message from Action");
+        	kafkaActionProducer.sendMessage(action); // Send list of actions to Kafka topic
+            System.out.println("BEFORE sending a message from Action");
+        }
+        
+        
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            String serializedActions = objectMapper.writeValueAsString(actions);
+//            kafkaTemplate.send("your_topic_name", serializedActions);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+        
     }
 
     @Override

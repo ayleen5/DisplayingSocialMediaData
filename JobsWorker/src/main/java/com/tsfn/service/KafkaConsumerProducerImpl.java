@@ -33,13 +33,15 @@ public class KafkaConsumerProducerImpl {
 
 	@Autowired
 	MetricRepository metricRepository;
+	@Autowired
+	MetricService meService;
 
 	String informationMesages = ""; // Via_To_MSG
 
 	@KafkaListener(topics = "ActionTopic", groupId = "groupId")
 	public void listen(String actionJson) {
 		Action action = new Gson().fromJson(actionJson, Action.class);
-		System.out.println("listen KafkaConsumerProducerImpl" + action.getName());
+//		System.out.println("listen KafkaConsumerProducerImpl" + action.getName());
 		Hashtable<String, ArrayList<String>> conditions;
 		String accountId;
 //
@@ -76,19 +78,19 @@ public class KafkaConsumerProducerImpl {
 	public boolean CheckPosts(Hashtable<String, ArrayList<String>> conditions, String accountId) {
 		// get all files for the accoundId
 		
-		System.out.println("In the ifff AFTER NULLLLL");
+//		System.out.println("In the ifff AFTER NULLLLL");
 
 		List<Loader> posts = clientLoader.getAllFilesByAccountLoader(accountId);
-		System.out.println("AFTER get all posts");
+//		System.out.println("AFTER get all posts");
 
 		// check condition
 		boolean flag = false;
 
 		for (Loader post : posts) {
-			System.out.println(" -----the post NAME  :::: " + post.getContentType());
+//			System.out.println(" -----the post NAME  :::: " + post.getContentType());
 			flag = (flag || CheckConditionForPosts(conditions, post));
 		}
-		System.out.println("FLAAAGGGG :::: " + flag);
+//		System.out.println("FLAAAGGGG :::: " + flag);
 		return flag;
 
 	}
@@ -103,15 +105,22 @@ public class KafkaConsumerProducerImpl {
 			ArrayList<String> metricsInfo = conditions.get(clause);
 
 			clause_result = true; // and
+//			System.err.println("hhhh1");
 
 			for (String metricId : metricsInfo) {
+//				System.err.println("hhhh1"+metricId);
 				
-				Metric metricB = metricRepository.getById(Integer.parseInt(metricId));
+				int id = Integer.parseInt(metricId);
+//				System.err.println(id);
 				
+				Metric metricB = meService.getMetricById(id);
+				
+//				System.err.println("mmmm"+metricB);
 				String metric = metricB.getMetric();
+//				System.err.println(metric);
 				int threshold = metricB.getThreshold();
 				int time_frame_hours = metricB.getTime_frame_hours();
-				System.out.println("Deeeeebuuuugggg");
+//				System.out.println("Deeeeebuuuugggg");
 				metric_flag = true;
 				// Impressions
 				if (metric.equals("Impressions")) {

@@ -47,7 +47,7 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 	// Path to the directory containing the files
-	private String DIRECTORY_PATH = "C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files";
+	private String DIRECTORY_PATH = "https://github.com/fadykittan/tsofen_project_data_files";
 
 	public boolean start() {
 		if (!running) {
@@ -98,13 +98,13 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 //			}
 
 		loaderService.processCsvInstagramFile(
-				"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\instagram");
+				"https://github.com/fadykittan/tsofen_project_data_files/tree/main/instagram");
 
 		loaderService.processCsvFacebookFile(
-				"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\facebook");
+				"https://github.com/fadykittan/tsofen_project_data_files/tree/main/facebook");
 
 		loaderService.processCsvLinkedInFile(
-				"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\linkedin");
+				"https://github.com/fadykittan/tsofen_project_data_files/tree/main/linkedin");
 
 //		} catch (IOException e) {
 //			e.printStackTrace();

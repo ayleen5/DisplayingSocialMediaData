@@ -19,6 +19,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.tsfn.model.DisableEnable;
 import com.tsfn.model.Loader;
 //import com.tsfn.service.FacebookService;
 //import com.tsfn.service.InstagramService;
@@ -28,15 +29,6 @@ import com.tsfn.service.LoaderService;
 @Component
 public final class FileFetcherScheduler implements Runnable, InitializingBean, DisposableBean {
 
-//	@Autowired
-//	private FacebookService facebookService;
-//
-//	@Autowired
-//	private InstagramService instagramService;
-//
-//	@Autowired
-//	private LinkedInService linkedinService;
-	
 	@Autowired
 	private LoaderService loaderService;
 
@@ -50,11 +42,10 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 
 	private String DIRECTORY_PATH = "https://github.com/fadykittan/tsofen_project_data_files";
 
-
 	public boolean start() {
 		if (!running) {
 			running = true;
-			scheduler.scheduleAtFixedRate(this, 0, 500, TimeUnit.SECONDS); // Fetch files every 15 seconds
+			scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS); // Fetch files every 15 seconds
 			return true;
 		}
 		return false;
@@ -78,39 +69,28 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 
 	@Override
 	public void run() {
-//		try {
-//			// Fetch files from the specified directory
-//			List<String> csvFiles = Files.list(Paths.get(DIRECTORY_PATH))
-//					.filter(path -> path.getFileName().toString().endsWith(".csv"))
-//					.map(path -> path.toAbsolutePath().toString()).collect(Collectors.toList());
-//
-//			// Process each CSV file
-//			for (String csvFile : csvFiles) {
-//
-//				if (csvFile.contains("instagram")) {
-//					System.out.println("Files Instagram   Instagram  Instagram:");
-//					instagramService.processCsvInstagramFile(csvFile);
-//				} else if (csvFile.contains("facebook")) {
-//					System.out.println("Files facebook   facebook  facebook:");
-//					facebookService.processCsvFacebookFile(csvFile);
-//				} else if (csvFile.contains("linkedin")) {
-//					System.out.println("Files LinkedIn   LinkedIn  LinkedIn:");
-//					linkedinService.processCsvLinkedInFile(csvFile);
-//				}
-//			}
+		System.err.println(loaderService.isIntasgram());
+		if (loaderService.isIntasgram()) {
+			loaderService.processCsvInstagramFile(
+					"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\instagram"
+			/*
+			 * "https://github.com/fadykittan/tsofen_project_data_files/tree/main/instagram"
+			 */);
+		}
 
-		loaderService.processCsvInstagramFile(
-				"https://github.com/fadykittan/tsofen_project_data_files/tree/main/instagram");
+		if (loaderService.isFacebook()) {
+			loaderService.processCsvFacebookFile(
+					"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\facebook");
+//			loaderService.processCsvFacebookFile(
+//					"https://github.com/fadykittan/tsofen_project_data_files/tree/main/facebook");
+		}
 
-		loaderService.processCsvFacebookFile(
-				"https://github.com/fadykittan/tsofen_project_data_files/tree/main/facebook");
-
-		loaderService.processCsvLinkedInFile(
-				"https://github.com/fadykittan/tsofen_project_data_files/tree/main/linkedin");
-
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		if (loaderService.isLinkedIn()) {
+			loaderService.processCsvLinkedInFile(
+					"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\linkedin");
+//			loaderService.processCsvLinkedInFile(
+//					"https://github.com/fadykittan/tsofen_project_data_files/tree/main/linkedin");
+		}
 
 	}
 

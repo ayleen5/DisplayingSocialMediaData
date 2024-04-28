@@ -1,6 +1,5 @@
 package com.tsfn.service;
 
-import com.tsfn.models.NotificatioTwilio;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -19,17 +18,17 @@ public class WhatsappService {
     @Value("${twilio.whatsapp_number}")
     private String TWILIO_WHATSAPP_NUMBER;
 
-    public void sendWhatsAppMessage(NotificatioTwilio messageModel) {
+    public void sendWhatsAppMessage(String to,String sms) {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
         // Use the recipient's phone number passed in the messageModel
-        String recipientPhoneNumber = "whatsapp:" + messageModel.getRecipint();
+        String recipientPhoneNumber = "whatsapp:" + to;
 
         // Create a WhatsApp message
         Message message = Message.creator(
                 new PhoneNumber(recipientPhoneNumber),
                 new PhoneNumber("whatsapp:" + TWILIO_WHATSAPP_NUMBER),
-                messageModel.getNotification_text())
+                sms)
                 .create();
 
         System.out.println("WhatsApp message sent successfully. SID: " + message.getSid());

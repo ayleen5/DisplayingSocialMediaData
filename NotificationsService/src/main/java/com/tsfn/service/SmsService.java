@@ -23,6 +23,7 @@ public class SmsService {
 
 //    @Autowired
     private NotificatioTwilio smsNot;
+ 
     public void sendSms(String to ,String sms) {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         

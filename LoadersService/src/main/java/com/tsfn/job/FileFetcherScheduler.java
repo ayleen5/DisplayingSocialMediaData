@@ -47,10 +47,9 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 	// Path to the directory containing the files
-<<<<<<< HEAD
+
 	private String DIRECTORY_PATH = "https://github.com/fadykittan/tsofen_project_data_files";
-=======
->>>>>>> 440acd0 (notification service)
+
 
 	public boolean start() {
 		if (!running) {

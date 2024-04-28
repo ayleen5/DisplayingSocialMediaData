@@ -21,11 +21,21 @@ import com.opencsv.exceptions.CsvValidationException;
 import com.tsfn.model.Loader;
 import com.tsfn.repository.LoaderRepository;
 
+import lombok.Data;
+
+
+@Data
 @Service
 public class LoaderService {
 
+	
 	@Autowired
 	private LoaderRepository loaderRepository;
+	
+	private boolean Intasgram = true;
+	private boolean Facebook = true;
+	private boolean LinkedIn = true;
+	
 	Map<String, Loader> aggregatedPosts = new HashMap<>();
 	
 	public void processCsvInstagramFile(String directoryPath) {
@@ -43,9 +53,6 @@ public class LoaderService {
 				String filename = Paths.get(filePath).getFileName().toString();
 				String userId = filename.split("_")[0];
 
-				// LoaderDTO existingPost =
-				// loaderDTORepo.findByAccountLoaderAndTimestamp(userId, fileTimestamp);
-
 				// if the database or ( it is within the last hour && no other file with the
 				// same user and time stamp)
 
@@ -57,9 +64,7 @@ public class LoaderService {
 						while ((nextRecord = csvReader.readNext()) != null) {
 							try {
 								Loader post = new Loader();
-								// LoaderDTO existingPost =
-								// loaderDTORepo.findByAccountLoaderAndTimestampAndPostId(userId, fileTimestamp,
-								// nextRecord[0]);
+
 								if (!nextRecord[0].isBlank()) {
 									Loader existingPost = loaderRepository.findByAccountLoaderAndTimestampAndPostId(
 											userId, fileTimestamp, nextRecord[0]);

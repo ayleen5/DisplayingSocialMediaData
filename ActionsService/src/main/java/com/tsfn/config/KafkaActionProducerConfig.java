@@ -19,7 +19,7 @@ import com.tsfn.model.Action;
 @Configuration
 public class KafkaActionProducerConfig {
 
-	@Value("${spring.kafka.bootstrap-servers}")
+	@Value("${spring.kafka.producer.bootstrap-servers}")
 	private String bootstrapServers ;
 	
 	

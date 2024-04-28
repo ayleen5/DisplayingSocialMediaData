@@ -21,7 +21,7 @@ public class SmsService {
     @Value("${twilio.trial_number}")
     private String TWILIO_NUMBER;
 
-    @Autowired
+//    @Autowired
     private NotificatioTwilio smsNot;
     public void sendSms(String to ,String sms) {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);

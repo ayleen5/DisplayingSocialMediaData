@@ -78,7 +78,7 @@ public class KafkaConsumerProducerImpl {
 	public boolean CheckPosts(Hashtable<String, ArrayList<String>> conditions, String accountId) {
 		// get all files for the accoundId
 		
-//		System.out.println("In the ifff AFTER NULLLLL");
+		System.out.println("In the ifff AFTER NULLLLL" + accountId);
 
 		List<Loader> posts = clientLoader.getAllFilesByAccountLoader(accountId);
 //		System.out.println("AFTER get all posts");
@@ -90,7 +90,7 @@ public class KafkaConsumerProducerImpl {
 //			System.out.println(" -----the post NAME  :::: " + post.getContentType());
 			flag = (flag || CheckConditionForPosts(conditions, post));
 		}
-//		System.out.println("FLAAAGGGG :::: " + flag);
+		System.out.println("FLAAAGGGG :::: " + flag);
 		return flag;
 
 	}

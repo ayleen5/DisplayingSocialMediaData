@@ -23,7 +23,7 @@ public class KafkaConsumerImpl {
         this.whatsappService = whatsappService;
     }
 
-    @KafkaListener(topics = "notificationTopic", groupId = "group_id")
+    @KafkaListener(topics = "NotificationTopic", groupId = "groupId")
     public void listen(String message) {
         System.out.println("Received message: " + message);
         // Parse the message and call the appropriate function based on the type of "via"

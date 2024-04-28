@@ -28,7 +28,8 @@ import com.tsfn.service.WhatsappService;
 public class KafkaConsumerConfig {
 
 
-	@Value("localhost:9092")
+//	@Value("localhost:9094")
+	@Value("${spring.kafka.consumer.bootstrap-servers}")
 	private String bootstrapServers ;
 	
 	

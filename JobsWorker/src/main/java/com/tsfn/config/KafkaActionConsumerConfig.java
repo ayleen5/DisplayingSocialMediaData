@@ -24,7 +24,8 @@ import com.tsfn.controller.client.Action.Action;
 @Configuration
 public class KafkaActionConsumerConfig {
 
-	@Value("localhost:9092")
+//	@Value("localhost:9092")
+	@Value("${spring.kafka.consumer.bootstrap-servers}")
 	private String bootstrapServers ;
 	
 	

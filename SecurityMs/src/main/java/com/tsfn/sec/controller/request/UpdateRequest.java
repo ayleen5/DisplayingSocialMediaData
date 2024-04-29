@@ -1,4 +1,4 @@
-package com.tsfn.sec.controller.request;
+ package com.tsfn.sec.controller.request;
 
 import java.util.List;
  
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpRequest {
+public class UpdateRequest {
     private String firstName;
     private String lastName;
     private String email;

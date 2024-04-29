@@ -59,7 +59,7 @@ public class KafkaConsumerProducerImpl {
 				if (CheckPosts(conditions, accountId)) {
 					
 					// Via_To_MSG
-					informationMesages = action.getAction_type().name() + "_" + action.getRecipient() + "_"
+					informationMesages = action.getAction_type().name() + "SPLIT" + action.getRecipient() + "SPLIT"
 							+ action.getNotification_text();
 				}
 
@@ -87,7 +87,6 @@ public class KafkaConsumerProducerImpl {
 		boolean flag = false;
 
 		for (Loader post : posts) {
-//			System.out.println(" -----the post NAME  :::: " + post.getContentType());
 			flag = (flag || CheckConditionForPosts(conditions, post));
 		}
 		System.out.println("FLAAAGGGG :::: " + flag);
@@ -105,22 +104,16 @@ public class KafkaConsumerProducerImpl {
 			ArrayList<String> metricsInfo = conditions.get(clause);
 
 			clause_result = true; // and
-//			System.err.println("hhhh1");
 
 			for (String metricId : metricsInfo) {
-//				System.err.println("hhhh1"+metricId);
 				
 				int id = Integer.parseInt(metricId);
-//				System.err.println(id);
 				
 				Metric metricB = meService.getMetricById(id);
 				
-//				System.err.println("mmmm"+metricB);
 				String metric = metricB.getMetric();
-//				System.err.println(metric);
 				int threshold = metricB.getThreshold();
 				int time_frame_hours = metricB.getTime_frame_hours();
-//				System.out.println("Deeeeebuuuugggg");
 				metric_flag = true;
 				// Impressions
 				if (metric.equals("Impressions")) {

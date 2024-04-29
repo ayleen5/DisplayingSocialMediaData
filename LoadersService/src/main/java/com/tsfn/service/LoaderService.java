@@ -1,16 +1,25 @@
 package com.tsfn.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,21 +32,21 @@ import com.tsfn.repository.LoaderRepository;
 
 import lombok.Data;
 
-
 @Data
 @Service
 public class LoaderService {
 
-	
 	@Autowired
 	private LoaderRepository loaderRepository;
-	
+
 	private boolean Intasgram = true;
 	private boolean Facebook = true;
 	private boolean LinkedIn = true;
-	
+
 	Map<String, Loader> aggregatedPosts = new HashMap<>();
+
 	
+
 	public void processCsvInstagramFile(String directoryPath) {
 
 		try {
@@ -72,7 +81,7 @@ public class LoaderService {
 									if (existingPost != null)
 										break;
 
-									System.out.println("InstagramService Files Instagram   Instagram  Instagram:");
+//									System.out.println("InstagramService Files Instagram   Instagram  Instagram:");
 
 									double impressions = isValidNumeric(nextRecord[11])
 											? Double.parseDouble(nextRecord[11])
@@ -230,7 +239,6 @@ public class LoaderService {
 				// the user id
 				String filename = Paths.get(filePath).getFileName().toString();
 				String userId = filename.split("_")[0];
-
 
 				// if the database or ( it is within the last hour && no other file with the
 				// same user and time stamp)
@@ -391,8 +399,6 @@ public class LoaderService {
 			return 0;
 		}
 	}
-	
-	
 
 	public List<Loader> findAllByAccountLoader(String accountLoader) {
 		return loaderRepository.findAllByAccountLoader(accountLoader);

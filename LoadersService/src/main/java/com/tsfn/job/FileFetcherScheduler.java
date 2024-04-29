@@ -69,27 +69,23 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 
 	@Override
 	public void run() {
-		System.err.println(loaderService.isIntasgram());
+//		System.err.println(loaderService.isIntasgram());
 		if (loaderService.isIntasgram()) {
 			loaderService.processCsvInstagramFile(
-					"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\instagram"
-			/*
-			 * "https://github.com/fadykittan/tsofen_project_data_files/tree/main/instagram"
-			 */);
+//					"https://github.com/YusraRa/tsofen_project_data_files/blob/main/instagram");
+			"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\instagram");
+
 		}
 
 		if (loaderService.isFacebook()) {
 			loaderService.processCsvFacebookFile(
 					"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\facebook");
-//			loaderService.processCsvFacebookFile(
-//					"https://github.com/fadykittan/tsofen_project_data_files/tree/main/facebook");
+
 		}
 
 		if (loaderService.isLinkedIn()) {
 			loaderService.processCsvLinkedInFile(
 					"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\linkedin");
-//			loaderService.processCsvLinkedInFile(
-//					"https://github.com/fadykittan/tsofen_project_data_files/tree/main/linkedin");
 		}
 
 	}

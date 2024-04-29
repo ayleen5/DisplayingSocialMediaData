@@ -27,24 +27,38 @@ public class KafkaConsumerImpl {
     public void listen(String message) {
         System.out.println("Received message: " + message);
         // Parse the message and call the appropriate function based on the type of "via"
-        String[] parts = message.split("_");
+        if (message == null) {
+            System.out.println("Received message is null.");
+            return;
+        }
+        
+        if (message == "") {
+            System.out.println("the condition is not true !");
+            return;
+        }
+        
+        String[] parts = message.split("SPLIT");
         if (parts.length != 3) {
-            System.out.println("Invalid message format: " + message);
+            System.out.println("Invalid message format. Expected format: 'viaSPLITtoSPLITnotification'. Received message: " + message);
             return;
         }
 
-        String via = parts[0];
-        String to = parts[1];
-        String notification = parts[2];
+        for(String p : parts) {
+            System.out.println("Part message format: " + p.trim());
+        }
+
+        String via = parts[0].trim();
+        String to = parts[1].trim();
+        String notification = parts[2].trim();
      
         switch (via) {
-            case "sms"://i need to do set here 
+            case "SMS"://i need to do set here 
                 smsService.sendSms(to, notification);
                 break;
-            case "email":
+            case "Email":
                 emailNotificationService.sendNotification(to, notification);
                 break;
-            case "whatsapp":
+            case "WhatsApp":
                 whatsappService.sendWhatsAppMessage(to,notification);
                 break;
             default:

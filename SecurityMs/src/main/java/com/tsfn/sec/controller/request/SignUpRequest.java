@@ -1,8 +1,8 @@
 package com.tsfn.sec.controller.request;
 
 import java.util.List;
- 
-import com.tsfn.sec.model.UserRole;
+
+import com.tsfn.sec.model.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,5 +18,5 @@ public class SignUpRequest {
     private String lastName;
     private String email;
     private String password;
-    private List<UserRole> roles;
+    private List<Role> roles;
 }

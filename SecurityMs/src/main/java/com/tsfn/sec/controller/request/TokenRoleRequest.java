@@ -1,4 +1,4 @@
- package com.tsfn.sec.controller.request;
+package com.tsfn.sec.controller.request;
 
 import java.util.List;
 
@@ -9,14 +9,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+ 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateRequest {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private List<Role> roles;
+public class TokenRoleRequest {
+    private String token;
+    private List<Role> requiredRoles;
 }

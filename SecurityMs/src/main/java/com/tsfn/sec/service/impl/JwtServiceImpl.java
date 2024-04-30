@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.tsfn.sec.repository.UserRepository;
 import com.tsfn.sec.service.JwtService;
 
 import io.jsonwebtoken.Claims;
@@ -21,6 +24,10 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtServiceImpl implements JwtService {
     
+	   
+	@Autowired
+	private  UserRepository userRepository;
+		
 	@Value("${token.signing.key}")
     private String jwtSigningKey;
     
@@ -69,4 +76,16 @@ public class JwtServiceImpl implements JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSigningKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+    
+    
+    @Override
+    public UserDetails getUserDetailsFromToken(String token) {
+        String username = extractUserName(token);
+        if (username != null) {
+            return userRepository.findByEmail(username) // Assuming you have a method to find UserDetails by username/email
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        }
+        return null;
+    }
+
 }

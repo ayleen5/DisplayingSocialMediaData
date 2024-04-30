@@ -1,15 +1,21 @@
 package com.tsfn.sec.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.tsfn.sec.controller.request.SignUpRequest;
 import com.tsfn.sec.controller.request.SigninRequest;
+import com.tsfn.sec.controller.request.TokenRoleRequest;
 import com.tsfn.sec.controller.request.UpdateRequest;
 import com.tsfn.sec.controller.response.JwtAuthenticationResponse;
 import com.tsfn.sec.controller.response.UpdateResponse;
+import com.tsfn.sec.controller.response.VerifyTokenAndCheckRolesResponse;
+import com.tsfn.sec.model.Role;
 import com.tsfn.sec.model.User;
 import com.tsfn.sec.repository.UserRepository;
 import com.tsfn.sec.service.AuthenticationService;
@@ -64,6 +70,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	    userRepository.save(user);
 	    return UpdateResponse.builder().build();
 	}
+	
+	
+	 @Override
+	    public VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(TokenRoleRequest tokenRoleRequest) {
+		 VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = new VerifyTokenAndCheckRolesResponse();
+	        UserDetails userDetails = jwtService.getUserDetailsFromToken(tokenRoleRequest.getToken());
+	        if (userDetails == null) {
+	        	verifyTokenAndCheckRolesResponse.setMessage("Token verification failed");
+	        	return verifyTokenAndCheckRolesResponse;
+	        }
 
+	        User user = userRepository.findByEmail(userDetails.getUsername()).orElse(null);
+	        if (user == null) {
+	         	verifyTokenAndCheckRolesResponse.setMessage("User not found");
+	        	return verifyTokenAndCheckRolesResponse;
+	        }
+
+	        List<Role> userRoles = user.getRoles();
+	        verifyTokenAndCheckRolesResponse.setMessage("");
+	        verifyTokenAndCheckRolesResponse.setVerifyTokenAndCheckRoles( userRoles.containsAll(tokenRoleRequest.getRequiredRoles()));
+	      	return verifyTokenAndCheckRolesResponse; 
+	    }
  
 }

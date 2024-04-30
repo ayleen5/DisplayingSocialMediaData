@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.tsfn.controller.client.security.SecurityClient;
+import com.tsfn.controller.client.security.TokenRoleRequest;
+import com.tsfn.controller.client.security.VerifyTokenAndCheckRolesResponse;
 import com.tsfn.model.Action;
 import com.tsfn.service.ActionService;
 
@@ -22,16 +25,25 @@ public class ActionController {
 	
 	@Autowired
     private  ActionService actionService;
+	
+	@Autowired
+	private  SecurityClient securityCleint;
 
 	private static final Logger logger = LoggerFactory.getLogger(ActionController.class);
     
 
     @PostMapping("/create")
-    public ResponseEntity<Action> createAction(@RequestBody Action action) {
+    public ResponseEntity<Action> createAction(@RequestBody Action action, @RequestHeader("Authorization") String token) {
     	try {
+    		VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = securityCleint.verifyTokenAndCheckRoles(new TokenRoleRequest());
+    		if(verifyTokenAndCheckRolesResponse.isVerifyTokenAndCheckRoles()) {
     		actionService.save(action);
     		logger.info("ActionController.createAction: Success creating action with name:", action.getName());
     		return new ResponseEntity<>(action, HttpStatus.CREATED);
+    		} 
+    		logger.info("ActionController.createAction: Faild You dont have paramition");
+    		return new ResponseEntity<>(null, HttpStatus.CREATED);
+    		
     	} catch (Exception e){
     		logger.error("ActionController.createAction: Error creating action with name:"+ action.getName(), e.getMessage());
     		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

@@ -1,6 +1,5 @@
 package com.tsfn.sec.controller.response;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VerifyTokenAndCheckRolesResponse {
-    private boolean isVerifyTokenAndCheckRoles;
+public class CheackUserTokenResponse {
+    private boolean isUserToken;
     private String message;
 }
-

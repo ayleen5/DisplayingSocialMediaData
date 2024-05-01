@@ -10,8 +10,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.tsfn.sec.controller.request.SignUpRequest;
 import com.tsfn.sec.controller.request.SigninRequest;
+import com.tsfn.sec.controller.request.TokenRequest;
 import com.tsfn.sec.controller.request.TokenRoleRequest;
 import com.tsfn.sec.controller.request.UpdateRequest;
+import com.tsfn.sec.controller.response.CheackUserTokenResponse;
 import com.tsfn.sec.controller.response.JwtAuthenticationResponse;
 import com.tsfn.sec.controller.response.UpdateResponse;
 import com.tsfn.sec.controller.response.VerifyTokenAndCheckRolesResponse;
@@ -92,12 +94,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		    
 		if(hasRequiredRole) {
 		    verifyTokenAndCheckRolesResponse.setMessage("successfully");
-		} else {
-		verifyTokenAndCheckRolesResponse.setMessage("you don't have permission");
+		} 
+		else {
+			verifyTokenAndCheckRolesResponse.setMessage("you don't have permission");
 		}
 		
-		verifyTokenAndCheckRolesResponse.setVerifyTokenAndCheckRoles(hasRequiredRole);
-		    
-		    return verifyTokenAndCheckRolesResponse;
+		verifyTokenAndCheckRolesResponse.setVerifyTokenAndCheckRoles(hasRequiredRole);   
+	    return verifyTokenAndCheckRolesResponse;
 		}
+	
+	@Override
+	public CheackUserTokenResponse cheackUserToken(TokenRequest tokenRequest) {
+		CheackUserTokenResponse cheackUserTokenResponse = new CheackUserTokenResponse();
+		UserDetails userDetails = jwtService.getUserDetailsFromToken(tokenRequest.getToken());
+		if (userDetails == null) {
+			cheackUserTokenResponse.setMessage("Token verification failed");
+		    return cheackUserTokenResponse;
+		}
+	 
+		User user = userRepository.findByEmail(userDetails.getUsername()).orElse(null);
+		if(user == null) {
+			cheackUserTokenResponse.setMessage("you don't have permission");
+ 		}
+		else {
+		cheackUserTokenResponse.setMessage("successfully");
+		cheackUserTokenResponse.setUserToken(true);
+		}
+	    return cheackUserTokenResponse;
+		 
+	}
 }

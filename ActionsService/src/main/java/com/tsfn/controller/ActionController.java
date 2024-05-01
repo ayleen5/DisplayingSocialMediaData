@@ -50,7 +50,7 @@ public class ActionController {
     		 
     		}
     		
-    		logger.info("ActionController.createAction");
+    		logger.info("ActionController.createAction" + verifyTokenAndCheckRolesResponse.getMessage() );
     		return new ResponseEntity<>(verifyTokenAndCheckRolesResponse.getMessage(), HttpStatus.OK);
     		
     	} catch (Exception e){
@@ -62,6 +62,7 @@ public class ActionController {
     @GetMapping("/get{id}")
     public ResponseEntity<Action> getActionById(@RequestParam int id) {
     	try {
+    		
             Optional<Action> result = actionService.getById(id);
             return result.map(action -> {
                 logger.info("ActionController.getActionById: Found action with ID:" + action.getName());
@@ -89,8 +90,16 @@ public class ActionController {
     }
 
     @PutMapping("/update{id}")
-    public ResponseEntity<Void> updateAction(@RequestParam int id, @RequestBody Action action) {
+    public ResponseEntity<String> updateAction(@RequestParam int id, @RequestBody Action action, @RequestHeader("Authorization") String authorizationHeader) {
     	try {
+ 		   List<Role> roles = new ArrayList<>();
+	        roles.add(Role.UPDATE_ACTION);
+	        roles.add(Role.ADMIN);
+		
+		VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = seccurityHelper.
+				verifyTokenAndCheckRoles(authorizationHeader,roles);
+		if(verifyTokenAndCheckRolesResponse.isVerifyTokenAndCheckRoles())
+		{
             if (!actionService.getById(id).isPresent()) {
                 logger.warn("ActionController.updateAction: No action found to update with ID:" + id);
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -99,6 +108,11 @@ public class ActionController {
             actionService.save(action);
             logger.info("ActionController.updateAction: Success updating action with ID: " +id);
             return new ResponseEntity<>(HttpStatus.OK);
+    	}
+		
+		logger.info("ActionController.createAction" + verifyTokenAndCheckRolesResponse.getMessage() );
+		return new ResponseEntity<>(verifyTokenAndCheckRolesResponse.getMessage(), HttpStatus.OK);
+		
     	} catch (Exception e) {
     	    logger.error("ActionController.updateAction: Error updating action with ID: "+id, e.getMessage());
     		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -106,8 +120,16 @@ public class ActionController {
     }
 
     @DeleteMapping("/delete{id}")
-    public ResponseEntity<Void> deleteAction(@RequestParam int id) {
+    public ResponseEntity<String> deleteAction(@RequestParam int id, @RequestHeader("Authorization") String authorizationHeader) {
     	try {
+ 		   List<Role> roles = new ArrayList<>();
+	        roles.add(Role.DELETE_ACTION);
+	        roles.add(Role.ADMIN);
+		
+		VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = seccurityHelper.
+				verifyTokenAndCheckRoles(authorizationHeader,roles);
+		if(verifyTokenAndCheckRolesResponse.isVerifyTokenAndCheckRoles())
+		{
             if (!actionService.getById(id).isPresent()) {
                 logger.warn("ActionController.deleteAction: No action found to delete with ID: "+ id);
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -115,6 +137,12 @@ public class ActionController {
             actionService.delete(id);
             logger.info("ActionController.deleteAction: Success deleting action with ID: " +id);
             return new ResponseEntity<>(HttpStatus.OK);
+            
+    	}
+		
+		logger.info("ActionController.createAction" + verifyTokenAndCheckRolesResponse.getMessage() );
+		return new ResponseEntity<>(verifyTokenAndCheckRolesResponse.getMessage(), HttpStatus.OK);
+            
     	} catch (Exception e) {
     	    logger.error("ActionController.deleteAction: Error deleting action with ID: " +id, e.getMessage());
     		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

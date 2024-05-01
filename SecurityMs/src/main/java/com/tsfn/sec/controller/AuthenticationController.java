@@ -121,4 +121,18 @@ public class AuthenticationController {
 	    	return verifyTokenAndCheckRolesResponse;
 	    }
     }
+	 
+
+//	 @PostMapping("/verifyTokenAndCheckRoles")
+//	 public VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(@RequestBody TokenRoleRequest tokenRoleRequest){
+//    	VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = new VerifyTokenAndCheckRolesResponse();
+//    	try {
+//    		verifyTokenAndCheckRolesResponse = authenticationService.verifyTokenAndCheckRoles(tokenRoleRequest);
+//    		//verifyTokenAndCheckRolesResponse.setVerifyTokenAndCheckRoles(true);
+//	        return verifyTokenAndCheckRolesResponse;
+//	    } catch (Exception e) {
+//	    	verifyTokenAndCheckRolesResponse.setMessage(e.getMessage());
+//	    	return verifyTokenAndCheckRolesResponse;
+//	    }
+//    }
 }

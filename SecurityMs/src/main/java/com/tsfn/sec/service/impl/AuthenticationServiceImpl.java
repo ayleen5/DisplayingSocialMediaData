@@ -71,26 +71,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	    return UpdateResponse.builder().build();
 	}
 	
-	
-	 @Override
-	    public VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(TokenRoleRequest tokenRoleRequest) {
-		 VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = new VerifyTokenAndCheckRolesResponse();
-	        UserDetails userDetails = jwtService.getUserDetailsFromToken(tokenRoleRequest.getToken());
-	        if (userDetails == null) {
-	        	verifyTokenAndCheckRolesResponse.setMessage("Token verification failed");
-	        	return verifyTokenAndCheckRolesResponse;
-	        }
-
-	        User user = userRepository.findByEmail(userDetails.getUsername()).orElse(null);
-	        if (user == null) {
-	         	verifyTokenAndCheckRolesResponse.setMessage("User not found");
-	        	return verifyTokenAndCheckRolesResponse;
-	        }
-
-	        List<Role> userRoles = user.getRoles();
-	        verifyTokenAndCheckRolesResponse.setMessage("");
-	        verifyTokenAndCheckRolesResponse.setVerifyTokenAndCheckRoles( userRoles.containsAll(tokenRoleRequest.getRequiredRoles()));
-	      	return verifyTokenAndCheckRolesResponse; 
-	    }
- 
+	@Override
+	public VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(TokenRoleRequest tokenRoleRequest) {
+		VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = new VerifyTokenAndCheckRolesResponse();
+		UserDetails userDetails = jwtService.getUserDetailsFromToken(tokenRoleRequest.getToken());
+		if (userDetails == null) {
+		    verifyTokenAndCheckRolesResponse.setMessage("Token verification failed");
+		    return verifyTokenAndCheckRolesResponse;
+		}
+		
+		User user = userRepository.findByEmail(userDetails.getUsername()).orElse(null);
+		if (user == null) {
+		    verifyTokenAndCheckRolesResponse.setMessage("User not found");
+		        return verifyTokenAndCheckRolesResponse;
+		    }
+		
+		    List<Role> userRoles = user.getRoles();
+		    boolean hasRequiredRole = userRoles.stream()
+		            .anyMatch(tokenRoleRequest.getRequiredRoles()::contains);
+		    
+		if(hasRequiredRole) {
+		    verifyTokenAndCheckRolesResponse.setMessage("successfully");
+		} else {
+		verifyTokenAndCheckRolesResponse.setMessage("you don't have permission");
+		}
+		
+		verifyTokenAndCheckRolesResponse.setVerifyTokenAndCheckRoles(hasRequiredRole);
+		    
+		    return verifyTokenAndCheckRolesResponse;
+		}
 }

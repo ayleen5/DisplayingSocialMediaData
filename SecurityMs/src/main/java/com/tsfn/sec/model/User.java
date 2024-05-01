@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
-    
+    private String account_id;    
     @Enumerated(EnumType.STRING)
     private List<Role> roles = new ArrayList<>();
 

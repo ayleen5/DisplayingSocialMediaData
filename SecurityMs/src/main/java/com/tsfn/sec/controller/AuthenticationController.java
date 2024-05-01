@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsfn.sec.controller.request.TokenRoleRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsfn.sec.controller.request.SignUpRequest;
 import com.tsfn.sec.controller.request.SigninRequest;
 import com.tsfn.sec.controller.request.UpdateRequest;
@@ -25,6 +26,7 @@ import com.tsfn.sec.model.Role;
 import com.tsfn.sec.service.AuthenticationService;
 //import com.tsfn.sec.service.RoleService;
 import com.tsfn.sec.service.impl.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,27 +42,34 @@ public class AuthenticationController {
 	@Autowired
 	private  UserServiceImpl userServiceImpl;
 	
+    @Value("${app.initial-user}")
+    private String initialUserJson;
+	
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@RequestBody SignUpRequest request) {
 	    try {
 	        // Check if the user making the request is authenticated and is an admin
-//	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//	        
-//	        
-////	        if(!userServiceImpl.isAdmin())
-////	        {
-////	        	
-////	        }
-//	      //  else {
-//	        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-//	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authenticated.");
-//	        }
-//
-//	        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//	        if (!userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"))) {
-//	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only ADMIN users are allowed to add new users.");
-//	        }
-	       // }
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        
+	        
+	        if(!userServiceImpl.hasAdminUser())
+	        {
+	            ObjectMapper objectMapper = new ObjectMapper();
+	            SignUpRequest createAdmin = objectMapper.readValue(initialUserJson, SignUpRequest.class);
+	            
+	            var createUser = authenticationService.signup(createAdmin);
+	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only ADMIN users are allowed to add new users.");
+
+	        } else {
+	        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authenticated.");
+	        }
+
+	        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+	        if (!userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"))) {
+	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only ADMIN users are allowed to add new users.");
+	        }
+	        }
 	        // If the user is authenticated and is an admin, proceed with signup
 	        return ResponseEntity.ok(authenticationService.signup(request));
 	    } catch (Exception e) {

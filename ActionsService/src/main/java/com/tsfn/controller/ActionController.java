@@ -1,5 +1,6 @@
 package com.tsfn.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.tsfn.controller.client.security.SecurityClient;
-import com.tsfn.controller.client.security.TokenRoleRequest;
+import com.tsfn.controller.client.security.Role;
+import com.tsfn.controller.client.security.SeccurityHelper;
 import com.tsfn.controller.client.security.VerifyTokenAndCheckRolesResponse;
 import com.tsfn.model.Action;
 import com.tsfn.service.ActionService;
@@ -27,26 +28,34 @@ public class ActionController {
     private  ActionService actionService;
 	
 	@Autowired
-	private  SecurityClient securityCleint;
+    private  SeccurityHelper seccurityHelper;
 
 	private static final Logger logger = LoggerFactory.getLogger(ActionController.class);
     
 
     @PostMapping("/create")
-    public ResponseEntity<Action> createAction(@RequestBody Action action, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> createAction(@RequestBody Action action, @RequestHeader("Authorization") String authorizationHeader) {
     	try {
-    		VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = securityCleint.verifyTokenAndCheckRoles(new TokenRoleRequest());
-    		if(verifyTokenAndCheckRolesResponse.isVerifyTokenAndCheckRoles()) {
+    		   List<Role> roles = new ArrayList<>();
+    	        roles.add(Role.CREATE_ACTION);
+    	        roles.add(Role.ADMIN);
+    		
+    		VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = seccurityHelper.
+    				verifyTokenAndCheckRoles(authorizationHeader,roles);
+    		if(verifyTokenAndCheckRolesResponse.isVerifyTokenAndCheckRoles())
+    		{
     		actionService.save(action);
     		logger.info("ActionController.createAction: Success creating action with name:", action.getName());
-    		return new ResponseEntity<>(action, HttpStatus.CREATED);
-    		} 
-    		logger.info("ActionController.createAction: Faild You dont have paramition");
-    		return new ResponseEntity<>(null, HttpStatus.CREATED);
+    		return new ResponseEntity<>(verifyTokenAndCheckRolesResponse.getMessage(), HttpStatus.CREATED);
+    		 
+    		}
+    		
+    		logger.info("ActionController.createAction");
+    		return new ResponseEntity<>(verifyTokenAndCheckRolesResponse.getMessage(), HttpStatus.OK);
     		
     	} catch (Exception e){
     		logger.error("ActionController.createAction: Error creating action with name:"+ action.getName(), e.getMessage());
-    		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     	}
     }
 
@@ -111,5 +120,6 @@ public class ActionController {
     		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     	}
     }
+
 }
 

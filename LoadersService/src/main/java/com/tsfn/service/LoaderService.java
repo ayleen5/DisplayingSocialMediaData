@@ -22,15 +22,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.el.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import com.tsfn.model.FileInfo;
 import com.tsfn.model.Loader;
 import com.tsfn.repository.LoaderRepository;
 
 import lombok.Data;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 @Data
 @Service
@@ -38,6 +46,8 @@ public class LoaderService {
 
 	@Autowired
 	private LoaderRepository loaderRepository;
+	@Autowired
+	private RestTemplate restTemplate;
 
 	private boolean Intasgram = true;
 	private boolean Facebook = true;
@@ -45,28 +55,21 @@ public class LoaderService {
 
 	Map<String, Loader> aggregatedPosts = new HashMap<>();
 
-	
-
 	public void processCsvInstagramFile(String directoryPath) {
 
 		try {
-			List<String> instagramCsvFiles = Files.list(Paths.get(directoryPath))
-					.filter(path -> path.getFileName().toString().contains("instagram")
-							&& path.getFileName().toString().endsWith(".csv"))
-					.map(path -> path.toAbsolutePath().toString()).collect(Collectors.toList());
+			FileInfo[] csvRows = getCsvFiles(directoryPath);
 
-			for (String filePath : instagramCsvFiles) {
+			for (FileInfo fileInfo : csvRows) {
 
-				LocalDateTime fileTimestamp = extractTimestampFromFileName(filePath);
+				LocalDateTime fileTimestamp = extractTimestampFromFileName(fileInfo.getPath());
 				// the user id
-				String filename = Paths.get(filePath).getFileName().toString();
+				String filename = Paths.get(fileInfo.getName()).getFileName().toString();
 				String userId = filename.split("_")[0];
 
-				// if the database or ( it is within the last hour && no other file with the
-				// same user and time stamp)
-
 				if (loaderRepository.count() == 0 || (isWithinLastHour(fileTimestamp))) {
-					try (Reader reader = Files.newBufferedReader(Paths.get(filePath));
+					try (BufferedReader reader = new BufferedReader(
+							new InputStreamReader(new URL(fileInfo.getDownloadUrl()).openStream()));
 							CSVReader csvReader = new CSVReader(reader)) {
 
 						String[] nextRecord;
@@ -80,8 +83,6 @@ public class LoaderService {
 
 									if (existingPost != null)
 										break;
-
-//									System.out.println("InstagramService Files Instagram   Instagram  Instagram:");
 
 									double impressions = isValidNumeric(nextRecord[11])
 											? Double.parseDouble(nextRecord[11])
@@ -131,30 +132,26 @@ public class LoaderService {
 				}
 
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void processCsvLinkedInFile(String directoryPath) {
+
 		try {
-			List<String> linkedinCsvFiles = Files.list(Paths.get(directoryPath))
-					.filter(path -> path.getFileName().toString().contains("linkedin")
-							&& path.getFileName().toString().endsWith(".csv"))
-					.map(path -> path.toAbsolutePath().toString()).collect(Collectors.toList());
+			FileInfo[] csvRows = getCsvFiles(directoryPath);
 
-			for (String filePath : linkedinCsvFiles) {
+			for (FileInfo fileInfo : csvRows) {
 
-				LocalDateTime fileTimestamp = extractTimestampFromFileName(filePath);
+				LocalDateTime fileTimestamp = extractTimestampFromFileName(fileInfo.getPath());
 				// the user id
-				String filename = Paths.get(filePath).getFileName().toString();
+				String filename = Paths.get(fileInfo.getName()).getFileName().toString();
 				String userId = filename.split("_")[0];
 
-				// if the database or ( it is within the last hour && no other file with the
-				// same user and time stamp)
-
 				if (loaderRepository.count() == 0 || (isWithinLastHour(fileTimestamp))) {
-					try (Reader reader = Files.newBufferedReader(Paths.get(filePath));
+					try (BufferedReader reader = new BufferedReader(
+							new InputStreamReader(new URL(fileInfo.getDownloadUrl()).openStream()));
 							CSVReader csvReader = new CSVReader(reader)) {
 
 						String[] nextRecord;
@@ -221,30 +218,26 @@ public class LoaderService {
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void processCsvFacebookFile(String directoryPath) {
+
 		try {
-			List<String> facebookCsvFiles = Files.list(Paths.get(directoryPath))
-					.filter(path -> path.getFileName().toString().contains("facebook")
-							&& path.getFileName().toString().endsWith(".csv"))
-					.map(path -> path.toAbsolutePath().toString()).collect(Collectors.toList());
+			FileInfo[] csvRows = getCsvFiles(directoryPath);
 
-			for (String filePath : facebookCsvFiles) {
+			for (FileInfo fileInfo : csvRows) {
 
-				LocalDateTime fileTimestamp = extractTimestampFromFileName(filePath);
+				LocalDateTime fileTimestamp = extractTimestampFromFileName(fileInfo.getPath());
 				// the user id
-				String filename = Paths.get(filePath).getFileName().toString();
+				String filename = Paths.get(fileInfo.getName()).getFileName().toString();
 				String userId = filename.split("_")[0];
 
-				// if the database or ( it is within the last hour && no other file with the
-				// same user and time stamp)
-
 				if (loaderRepository.count() == 0 || (isWithinLastHour(fileTimestamp))) {
-					try (Reader reader = Files.newBufferedReader(Paths.get(filePath));
+					try (BufferedReader reader = new BufferedReader(
+							new InputStreamReader(new URL(fileInfo.getDownloadUrl()).openStream()));
 							CSVReader csvReader = new CSVReader(reader)) {
 
 						String[] nextRecord;
@@ -308,12 +301,13 @@ public class LoaderService {
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private LocalDateTime extractTimestampFromFileName(String filePath) {
+
 		String filename = Paths.get(filePath).getFileName().toString();
 		String[] parts = filename.split("_|T");
 		String year = parts[2];
@@ -406,5 +400,12 @@ public class LoaderService {
 
 	public List<Loader> getFilesWithImpressionGreaterThanThreshold(int threshold) {
 		return loaderRepository.findAllByImpressionsGreaterThanEqual(threshold);
+	}
+
+	public FileInfo[] getCsvFiles(String directoryPath) {
+		String csvData = restTemplate.getForObject(directoryPath, String.class);
+		String[] lines = csvData.split("\\r?\\n");
+		FileInfo[] fileInfoArray = FileInfo.fromJson(csvData);
+		return fileInfoArray;
 	}
 }

@@ -18,7 +18,9 @@ import com.tsfn.sec.controller.request.TokenRoleRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsfn.sec.controller.request.SignUpRequest;
 import com.tsfn.sec.controller.request.SigninRequest;
+import com.tsfn.sec.controller.request.TokenRequest;
 import com.tsfn.sec.controller.request.UpdateRequest;
+import com.tsfn.sec.controller.response.CheackUserTokenResponse;
 import com.tsfn.sec.controller.response.JwtAuthenticationResponse;
 import com.tsfn.sec.controller.response.UpdateResponse;
 import com.tsfn.sec.controller.response.VerifyTokenAndCheckRolesResponse;
@@ -34,105 +36,101 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    
-	
+
 	@Autowired
-	private  AuthenticationService authenticationService;
-	
+	private AuthenticationService authenticationService;
+
 	@Autowired
-	private  UserServiceImpl userServiceImpl;
-	
-    @Value("${app.initial-user}")
-    private String initialUserJson;
-	
+	private UserServiceImpl userServiceImpl;
+
+	@Value("${app.initial-user}")
+	private String initialUserJson;
+
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@RequestBody SignUpRequest request) {
-	    try {
-	        // Check if the user making the request is authenticated and is an admin
-	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	        
-	        
-	        if(!userServiceImpl.hasAdminUser())
-	        {
-	            ObjectMapper objectMapper = new ObjectMapper();
-	            SignUpRequest createAdmin = objectMapper.readValue(initialUserJson, SignUpRequest.class);
-	            
-	            var createUser = authenticationService.signup(createAdmin);
-	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only ADMIN users are allowed to add new users.");
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-	        } else {
-	        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authenticated.");
-	        }
+			if (!userServiceImpl.hasAdminUser()) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				SignUpRequest createAdmin = objectMapper.readValue(initialUserJson, SignUpRequest.class);
 
-	        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-	        if (!userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"))) {
-	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only ADMIN users are allowed to add new users.");
-	        }
-	        }
-	        // If the user is authenticated and is an admin, proceed with signup
-	        return ResponseEntity.ok(authenticationService.signup(request));
-	    } catch (Exception e) {
-	        String errorMessage = "An error occurred during signup: " + e.getMessage();
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-	    }
+				var createUser = authenticationService.signup(createAdmin);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN)
+						.body("Only ADMIN users are allowed to add new users.");
+
+			} else {
+				if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authenticated.");
+				}
+
+				UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+				if (!userDetails.getAuthorities().stream()
+						.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"))) {
+					return ResponseEntity.status(HttpStatus.FORBIDDEN)
+							.body("Only ADMIN users are allowed to add new users.");
+				}
+			}
+			// If the user is authenticated and is an admin, proceed with signup
+			return ResponseEntity.ok(authenticationService.signup(request));
+		} catch (Exception e) {
+			String errorMessage = "An error occurred during signup: " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+		}
 	}
 
-    @PostMapping("/signin")
-    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
-        return ResponseEntity.ok(authenticationService.signin(request));
-    }
-    
-    @PostMapping("/update")
-    public ResponseEntity<UpdateResponse> update(@RequestBody UpdateRequest request) {
-	    	UpdateResponse  updateResponse = new UpdateResponse(); 
-    	try {
-	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	     	 
-	        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-	        	updateResponse.setMessage("You are not authenticated.");
-	        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(updateResponse);
-	        }
+	@PostMapping("/signin")
+	public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
+		return ResponseEntity.ok(authenticationService.signin(request));
+	}
 
-	        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-	        if (!userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"))) {
-	        	updateResponse.setMessage("Only ADMIN users are allowed to update  users.");
-	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(updateResponse);
-	        }
-	       
-	        return ResponseEntity.ok(authenticationService.update(request));
-	    } catch (Exception e) {
-	        String errorMessage = "An error occurred during signup: " + e.getMessage();
-	    	updateResponse.setMessage(errorMessage);
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
-	    }
-    }
-    
-	
-	 @PostMapping("/verifyTokenAndCheckRoles")
-	 public VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(@RequestBody TokenRoleRequest tokenRoleRequest){
-    	VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = new VerifyTokenAndCheckRolesResponse();
-    	try {
-    		verifyTokenAndCheckRolesResponse = authenticationService.verifyTokenAndCheckRoles(tokenRoleRequest);
-    		//verifyTokenAndCheckRolesResponse.setVerifyTokenAndCheckRoles(true);
-	        return verifyTokenAndCheckRolesResponse;
-	    } catch (Exception e) {
-	    	verifyTokenAndCheckRolesResponse.setMessage(e.getMessage());
-	    	return verifyTokenAndCheckRolesResponse;
-	    }
-    }
-	 
+	@PostMapping("/update")
+	public ResponseEntity<UpdateResponse> update(@RequestBody UpdateRequest request) {
+		UpdateResponse updateResponse = new UpdateResponse();
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-//	 @PostMapping("/verifyTokenAndCheckRoles")
-//	 public VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(@RequestBody TokenRoleRequest tokenRoleRequest){
-//    	VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = new VerifyTokenAndCheckRolesResponse();
-//    	try {
-//    		verifyTokenAndCheckRolesResponse = authenticationService.verifyTokenAndCheckRoles(tokenRoleRequest);
-//    		//verifyTokenAndCheckRolesResponse.setVerifyTokenAndCheckRoles(true);
-//	        return verifyTokenAndCheckRolesResponse;
-//	    } catch (Exception e) {
-//	    	verifyTokenAndCheckRolesResponse.setMessage(e.getMessage());
-//	    	return verifyTokenAndCheckRolesResponse;
-//	    }
-//    }
+			if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+				updateResponse.setMessage("You are not authenticated.");
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(updateResponse);
+			}
+
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			if (!userDetails.getAuthorities().stream()
+					.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"))) {
+				updateResponse.setMessage("Only ADMIN users are allowed to update  users.");
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(updateResponse);
+			}
+
+			return ResponseEntity.ok(authenticationService.update(request));
+		} catch (Exception e) {
+			String errorMessage = "An error occurred during signup: " + e.getMessage();
+			updateResponse.setMessage(errorMessage);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
+		}
+	}
+
+	@PostMapping("/verifyTokenAndCheckRoles")
+	public VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(@RequestBody TokenRoleRequest tokenRoleRequest) {
+		VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = new VerifyTokenAndCheckRolesResponse();
+		try {
+			verifyTokenAndCheckRolesResponse = authenticationService.verifyTokenAndCheckRoles(tokenRoleRequest);
+			return verifyTokenAndCheckRolesResponse;
+		} catch (Exception e) {
+			verifyTokenAndCheckRolesResponse.setMessage(e.getMessage());
+			return verifyTokenAndCheckRolesResponse;
+		}
+	}
+
+	@PostMapping("/cheackUserToken")
+	public CheackUserTokenResponse cheackUserToken(@RequestBody TokenRequest tokenRequest) {
+		CheackUserTokenResponse cheackUserTokenResponse = new CheackUserTokenResponse();
+		try {
+			cheackUserTokenResponse = authenticationService.cheackUserToken(tokenRequest);
+			return cheackUserTokenResponse;
+		} catch (Exception e) {
+			cheackUserTokenResponse.setMessage(e.getMessage());
+			return cheackUserTokenResponse;
+		}
+	}
 }

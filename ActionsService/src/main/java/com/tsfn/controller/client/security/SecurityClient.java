@@ -11,4 +11,6 @@ public interface SecurityClient {
     @PostMapping("/auth/verifyTokenAndCheckRoles")
     public VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(@RequestBody TokenRoleRequest tokenRoleRequest);
     
+	@PostMapping("/auth/cheackUserToken")
+	public CheackUserTokenResponse cheackUserToken(@RequestBody TokenRequest tokenReuest) ;
 }

@@ -13,10 +13,13 @@ import com.tsfn.sec.controller.response.UpdateResponse;
 import com.tsfn.sec.controller.response.VerifyTokenAndCheckRolesResponse;
 
 public interface AuthenticationService {
-    JwtAuthenticationResponse signup(SignUpRequest request);
-    JwtAuthenticationResponse signin(SigninRequest request);
-    UpdateResponse update(UpdateRequest request);
-    VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(TokenRoleRequest tokenRoleRequest);
-    
-	  CheackUserTokenResponse cheackUserToken(TokenRequest tokenRequest);
+	JwtAuthenticationResponse signup(SignUpRequest request);
+
+	JwtAuthenticationResponse signin(SigninRequest request);
+
+	UpdateResponse update(UpdateRequest request);
+
+	VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRoles(TokenRoleRequest tokenRoleRequest);
+
+	CheackUserTokenResponse cheackUserToken(TokenRequest tokenRequest);
 }

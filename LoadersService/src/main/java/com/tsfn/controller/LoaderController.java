@@ -23,6 +23,8 @@ public class LoaderController {
 	@Autowired
 	private LoaderService csvService;
 	String message = "";
+	
+	
 
 	@PutMapping("/enable")
 	public ResponseEntity<ResponseMessage> EnableLoader(@RequestParam String loaderName) {
@@ -80,6 +82,12 @@ public class LoaderController {
 		} else {
 			return files;
 		}
+	}
+	@GetMapping("/test")
+	public  void test() {
+		String repositoryUrl = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/";
+
+		csvService.processCsvInstagramFile(repositoryUrl + "instagram");
 	}
 
 }

@@ -1,29 +1,14 @@
 package com.tsfn.job;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.tsfn.model.DisableEnable;
-import com.tsfn.model.Loader;
-//import com.tsfn.service.FacebookService;
-//import com.tsfn.service.InstagramService;
-//import com.tsfn.service.LinkedInService;
 import com.tsfn.service.LoaderService;
 
 @Component
@@ -32,15 +17,8 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 	@Autowired
 	private LoaderService loaderService;
 
-	// Maintain a map to track file timestamps
-	private Map<String, Instant> fileTimestamps = new HashMap<>();
-
 	private boolean running;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-	// Path to the directory containing the files
-
-	private String DIRECTORY_PATH = "https://github.com/fadykittan/tsofen_project_data_files";
 
 	public boolean start() {
 		if (!running) {
@@ -69,23 +47,19 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 
 	@Override
 	public void run() {
-//		System.err.println(loaderService.isIntasgram());
-		if (loaderService.isIntasgram()) {
-			loaderService.processCsvInstagramFile(
-//					"https://github.com/YusraRa/tsofen_project_data_files/blob/main/instagram");
-			"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\instagram");
 
+		String repositoryUrl = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/";
+
+		if (loaderService.isIntasgram()) {
+			loaderService.processCsvInstagramFile(repositoryUrl + "instagram");
 		}
 
 		if (loaderService.isFacebook()) {
-			loaderService.processCsvFacebookFile(
-					"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\facebook");
-
+			loaderService.processCsvFacebookFile(repositoryUrl + "facebook");
 		}
 
 		if (loaderService.isLinkedIn()) {
-			loaderService.processCsvLinkedInFile(
-					"C:\\Users\\yusra\\Desktop\\Java Microservice Development\\project\\files\\linkedin");
+			loaderService.processCsvLinkedInFile(repositoryUrl + "linkedin");
 		}
 
 	}

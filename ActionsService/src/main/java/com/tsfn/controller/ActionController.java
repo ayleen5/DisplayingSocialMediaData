@@ -62,8 +62,13 @@ public class ActionController {
 	public ResponseEntity<Action> getActionById(@RequestParam int id,
 			@RequestHeader("Authorization") String authorizationHeader) {
 		try {
-			CheackUserTokenResponse cheackUserTokenResponse = seccurityHelper.cheackUserToken(authorizationHeader);
-			if (cheackUserTokenResponse.isUserToken()) {
+			List<Role> roles = new ArrayList<>();
+			roles.add(Role.READ_ACTION);
+			roles.add(Role.ADMIN);
+
+			VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = seccurityHelper
+					.verifyTokenAndCheckRoles(authorizationHeader, roles);
+			if (verifyTokenAndCheckRolesResponse.isVerifyTokenAndCheckRoles()) {
 				Optional<Action> result = actionService.getById(id);
 				return result.map(action -> {
 					logger.info("ActionController.getActionById: Found action with ID:" + action.getName());
@@ -73,7 +78,7 @@ public class ActionController {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				});
 			}
-			logger.info("ActionController.createAction" + cheackUserTokenResponse.getMessage());
+			logger.info("ActionController.createAction" + verifyTokenAndCheckRolesResponse.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
 		} catch (Exception e) {
@@ -85,13 +90,18 @@ public class ActionController {
 	@GetMapping("/getall")
 	public ResponseEntity<List<Action>> getAllActions(@RequestHeader("Authorization") String authorizationHeader) {
 		try {
-			CheackUserTokenResponse cheackUserTokenResponse = seccurityHelper.cheackUserToken(authorizationHeader);
-			if (cheackUserTokenResponse.isUserToken()) {
+			List<Role> roles = new ArrayList<>();
+			roles.add(Role.READ_ACTION);
+			roles.add(Role.ADMIN);
+
+			VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = seccurityHelper
+					.verifyTokenAndCheckRoles(authorizationHeader, roles);
+			if (verifyTokenAndCheckRolesResponse.isVerifyTokenAndCheckRoles()) {
 				List<Action> actions = actionService.getAll();
 				logger.info("ActionController.getAllActions: Success fetching all actions");
 				return new ResponseEntity<>(actions, HttpStatus.OK);
 			}
-			logger.info("ActionController.createAction" + cheackUserTokenResponse.getMessage());
+			logger.info("ActionController.createAction" + verifyTokenAndCheckRolesResponse.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			logger.error("ActionController.getAllActions: Error fetching all actions", e.getMessage());

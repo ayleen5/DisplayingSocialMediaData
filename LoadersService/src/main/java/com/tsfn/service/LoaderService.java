@@ -67,7 +67,7 @@ public class LoaderService {
 				String filename = Paths.get(fileInfo.getName()).getFileName().toString();
 				String userId = filename.split("_")[0];
 
-				if (loaderRepository.count() == 0 || (isWithinLastHour(fileTimestamp))) {
+				if (isWithinLastHour(fileTimestamp)) {
 					try (BufferedReader reader = new BufferedReader(
 							new InputStreamReader(new URL(fileInfo.getDownloadUrl()).openStream()));
 							CSVReader csvReader = new CSVReader(reader)) {
@@ -149,7 +149,7 @@ public class LoaderService {
 				String filename = Paths.get(fileInfo.getName()).getFileName().toString();
 				String userId = filename.split("_")[0];
 
-				if (loaderRepository.count() == 0 || (isWithinLastHour(fileTimestamp))) {
+				if (isWithinLastHour(fileTimestamp)) {
 					try (BufferedReader reader = new BufferedReader(
 							new InputStreamReader(new URL(fileInfo.getDownloadUrl()).openStream()));
 							CSVReader csvReader = new CSVReader(reader)) {
@@ -235,7 +235,7 @@ public class LoaderService {
 				String filename = Paths.get(fileInfo.getName()).getFileName().toString();
 				String userId = filename.split("_")[0];
 
-				if (loaderRepository.count() == 0 || (isWithinLastHour(fileTimestamp))) {
+				if (isWithinLastHour(fileTimestamp)) {
 					try (BufferedReader reader = new BufferedReader(
 							new InputStreamReader(new URL(fileInfo.getDownloadUrl()).openStream()));
 							CSVReader csvReader = new CSVReader(reader)) {

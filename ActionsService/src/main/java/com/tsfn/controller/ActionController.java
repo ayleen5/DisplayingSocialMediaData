@@ -168,5 +168,45 @@ public class ActionController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@PutMapping("/enable/{id}")
+	public ResponseEntity<String> enableAction(@PathVariable int id) {
+	    try {
+	        Optional<Action> optionalAction = actionService.getById(id);
+	        if (optionalAction.isPresent()) {
+	            Action action = optionalAction.get();
+	            action.setEnable(true); 
+	            actionService.save(action);
+	            logger.info("ActionController.enableAction: Success enabling action with ID: " + id);
+	            return new ResponseEntity<>(HttpStatus.OK);
+	        } else {
+	            logger.warn("ActionController.enableAction: No action found with ID: " + id);
+	            return new ResponseEntity<>("No action found with ID: " + id, HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        logger.error("ActionController.enableAction: Error enabling action with ID: " + id, e.getMessage());
+	        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	    }
+	}
+
+	@PutMapping("/disable/{id}")
+	public ResponseEntity<String> disableAction(@PathVariable int id) {
+	    try {
+	        Optional<Action> optionalAction = actionService.getById(id);
+	        if (optionalAction.isPresent()) {
+	            Action action = optionalAction.get();
+	            action.setEnable(false);
+	            actionService.save(action);
+	            logger.info("ActionController.disableAction: Success disabling action with ID: " + id);
+	            return new ResponseEntity<>(HttpStatus.OK);
+	        } else {
+	            logger.warn("ActionController.disableAction: No action found with ID: " + id);
+	            return new ResponseEntity<>("No action found with ID: " + id, HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        logger.error("ActionController.disableAction: Error disabling action with ID: " + id, e.getMessage());
+	        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	    }
+	}
 
 }

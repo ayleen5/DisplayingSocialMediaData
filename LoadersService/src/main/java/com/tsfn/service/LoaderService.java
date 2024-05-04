@@ -231,7 +231,6 @@ public class LoaderService {
 			for (FileInfo fileInfo : csvRows) {
 
 				LocalDateTime fileTimestamp = extractTimestampFromFileName(fileInfo.getPath());
-				// the user id
 				String filename = Paths.get(fileInfo.getName()).getFileName().toString();
 				String userId = filename.split("_")[0];
 
@@ -402,10 +401,93 @@ public class LoaderService {
 		return loaderRepository.findAllByImpressionsGreaterThanEqual(threshold);
 	}
 
-	public FileInfo[] getCsvFiles(String directoryPath) {
-		String csvData = restTemplate.getForObject(directoryPath, String.class);
-		String[] lines = csvData.split("\\r?\\n");
-		FileInfo[] fileInfoArray = FileInfo.fromJson(csvData);
-		return fileInfoArray;
-	}
+	 public FileInfo[] getCsvFiles(String directoryPath) {
+	        String csvData = restTemplate.getForObject(directoryPath, String.class);
+	        return FileInfo.fromJson(csvData);
+	    }
+	 
+	 public void processCsvFilesInRange(String directoryPath, LocalDateTime startDate, LocalDateTime endDate, String accountID) {
+		    try {
+		        FileInfo[] csvRows = getCsvFiles(directoryPath);
+
+		        for (FileInfo fileInfo : csvRows) {
+		            LocalDateTime fileTimestamp = extractTimestampFromFileName(fileInfo.getPath());
+		            if (fileTimestamp.isAfter(startDate) && fileTimestamp.isBefore(endDate)) {
+		                // Process the file only if its timestamp is within the specified range and matches the account ID
+		                String filename = Paths.get(fileInfo.getName()).getFileName().toString();
+		                String userId = filename.split("_")[0];
+		                    if (loaderRepository.count() == 0 || isWithinLastHour(fileTimestamp)) {
+		                    	try (BufferedReader reader = new BufferedReader(
+		    							new InputStreamReader(new URL(fileInfo.getDownloadUrl()).openStream()));
+		    							CSVReader csvReader = new CSVReader(reader)) {
+
+		    						String[] nextRecord;
+		    						while ((nextRecord = csvReader.readNext()) != null) {
+		    							try {
+		    								Loader post = new Loader();
+		    								if (!nextRecord[0].isBlank()) {
+		    									Loader existingPost = loaderRepository.findByAccountLoaderAndTimestampAndPostId(
+		    											userId, fileTimestamp, nextRecord[0]);
+
+		    									if (existingPost != null)
+		    										break;
+		    									double impressions = isValidNumeric(nextRecord[17])
+		    											? Double.parseDouble(nextRecord[17])
+		    											: 0.0;
+		    									double reach = isValidNumeric(nextRecord[18]) ? Double.parseDouble(nextRecord[18])
+		    											: 0.0;
+		    									double totalClicks = isValidNumeric(nextRecord[24])
+		    											? Double.parseDouble(nextRecord[24])
+		    											: 0.0;
+		    									double ReactionsCommentsShares = isValidNumeric(nextRecord[20])
+		    											? Double.parseDouble(nextRecord[20])
+		    											: 0.0;
+		    									double reactions = isValidNumeric(nextRecord[21])
+		    											? Double.parseDouble(nextRecord[21])
+		    											: 0.0;
+		    									double comments = isValidNumeric(nextRecord[22])
+		    											? Double.parseDouble(nextRecord[22])
+		    											: 0.0;
+		    									double shares = isValidNumeric(nextRecord[23]) ? Double.parseDouble(nextRecord[23])
+		    											: 0.0;
+
+		    									post.setPostId(nextRecord[0]);
+		    									post.setContentType(nextRecord[11]);
+		    									post.setImpressions(impressions);
+		    									post.setViews(reach);
+		    									post.setClicks(totalClicks);
+		    									post.setLikes(reactions);
+		    									post.setComments(comments);
+		    									post.setShares(shares);
+		    									post.setTimestamp(fileTimestamp);
+		    									post.setAccountLoader(userId);
+
+		    									if (impressions == 0)
+		    										post.setCTR(0);
+		    									else
+		    										post.setCTR(totalClicks / impressions);
+		    									if (reach == 0)
+		    										post.setEngagementrate(0);
+		    									else
+		    										post.setEngagementrate(ReactionsCommentsShares / reach);
+
+		    									Aggrigation(post);
+		    								}
+		    							} catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+		    								e.printStackTrace();
+		    							}
+		    						}
+		    					} catch (IOException | CsvValidationException e) {
+		    						e.printStackTrace();
+		    					}
+		    				}
+		    			
+		            }
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		}
+
+
 }

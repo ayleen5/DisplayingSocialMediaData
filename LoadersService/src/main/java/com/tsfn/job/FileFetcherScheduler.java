@@ -23,7 +23,7 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 	public boolean start() {
 		if (!running) {
 			running = true;
-			scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS); // Fetch files every 15 seconds
+			scheduler.scheduleAtFixedRate(this, 0, 50, TimeUnit.SECONDS); 
 			return true;
 		}
 		return false;

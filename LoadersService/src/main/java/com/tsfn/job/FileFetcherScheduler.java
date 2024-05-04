@@ -9,6 +9,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.tsfn.helper.FileType;
 import com.tsfn.service.LoaderService;
 
 @Component
@@ -23,7 +24,7 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 	public boolean start() {
 		if (!running) {
 			running = true;
-			scheduler.scheduleAtFixedRate(this, 0, 50, TimeUnit.SECONDS); 
+			scheduler.scheduleAtFixedRate(this, 0, 50, TimeUnit.MINUTES);
 			return true;
 		}
 		return false;
@@ -33,7 +34,7 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 		if (running) {
 			try {
 				scheduler.shutdown();
-				if (!scheduler.awaitTermination(5, TimeUnit.MINUTES)) {
+				if (!scheduler.awaitTermination(40, TimeUnit.MINUTES)) {
 					return false;
 				}
 				running = false;
@@ -48,18 +49,19 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 	@Override
 	public void run() {
 
-		String repositoryUrl = "https://api.github.com/repos/YusraRa/tsofen_project_data_files/contents/";
+		String repositoryUrl = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/";
 
 		if (loaderService.isIntasgram()) {
-			loaderService.processCsvInstagramFile(repositoryUrl + "instagram");
+			loaderService.processCsvFile(repositoryUrl + "instagram", FileType.INSTAGRAM, true);
 		}
 
 		if (loaderService.isFacebook()) {
-			loaderService.processCsvFacebookFile(repositoryUrl + "facebook");
+			loaderService.processCsvFile(repositoryUrl + "facebook", FileType.FACEBOOK, true);
 		}
 
 		if (loaderService.isLinkedIn()) {
-			loaderService.processCsvLinkedInFile(repositoryUrl + "linkedin");
+
+			loaderService.processCsvFile(repositoryUrl + "linkedin", FileType.LINKEDIN, true);
 		}
 
 	}

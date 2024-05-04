@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+ 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tsfn.helper.FileType;
+ 
 import com.tsfn.message.ResponseMessage;
 import com.tsfn.model.Loader;
 import com.tsfn.model.ManualRunRequest;
@@ -26,7 +28,8 @@ import com.tsfn.service.LoaderService;
 public class LoaderController {
 
 	@Autowired
-	private LoaderService csvService;
+	private LoaderService loaderService;
+ 
 	String message = "";
 	
 	@PostMapping("/manual-run")
@@ -42,7 +45,7 @@ public class LoaderController {
             String accountID = request.getAccountID();
 
             String directoryPath = repositoryUrl + loaderName;
-            csvService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID);
+            loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseMessage("Manual run for " + loaderName + " completed successfully."));
@@ -54,20 +57,20 @@ public class LoaderController {
     }
 	@GetMapping("/process")
 		    public ResponseEntity<ResponseMessage> processLoader(@RequestParam String loaderName) {
-		        String url;
+ 		        
+		        String repositoryUrl = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/";
+ 
 		        try {
 		            switch (loaderName.toLowerCase()) {
 		                case "instagram":
-		                    url = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/instagram";
-		                    csvService.processCsvInstagramFile(url);
+		                	loaderService.processCsvFile(repositoryUrl + "instagram", FileType.INSTAGRAM,false);
 		                    break;
 		                case "facebook":
-		                    url = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/facebook";
-		                    csvService.processCsvFacebookFile(url);
+		                    
+		                    loaderService.processCsvFile( repositoryUrl + "facebook", FileType.FACEBOOK, false);
 		                    break;
 		                case "linkedin":
-		                    url = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/linkedin";
-		                    csvService.processCsvLinkedInFile(url);
+		                	loaderService.processCsvFile( repositoryUrl + "linkedin", FileType.LINKEDIN, false);
 		                    break;
 		                default:
 		                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -86,11 +89,11 @@ public class LoaderController {
 	public ResponseEntity<ResponseMessage> EnableLoader(@RequestParam String loaderName) {
 		try {
 			if (loaderName.equalsIgnoreCase("instagram")) {
-				csvService.setIntasgram(true);
+				loaderService.setIntasgram(true);
 			} else if (loaderName.equalsIgnoreCase("Facebook")) {
-				csvService.setFacebook(true);
+				loaderService.setFacebook(true);
 			} else if (loaderName.equalsIgnoreCase("LinkedIn")) {
-				csvService.setLinkedIn(true);
+				loaderService.setLinkedIn(true);
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(loaderName + "enabled successfully."));
 		} catch (Exception e) {
@@ -104,11 +107,11 @@ public class LoaderController {
 	public ResponseEntity<ResponseMessage> DisableLoader(@RequestParam String loaderName) {
 		try {
 			if (loaderName.equalsIgnoreCase("instagram")) {
-				csvService.setIntasgram(false);
+				loaderService.setIntasgram(false);
 			} else if (loaderName.equalsIgnoreCase("Facebook")) {
-				csvService.setFacebook(false);
+				loaderService.setFacebook(false);
 			} else if (loaderName.equalsIgnoreCase("LinkedIn")) {
-				csvService.setLinkedIn(false);
+				loaderService.setLinkedIn(false);
 			}
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseMessage(loaderName + "disabled successfully."));
@@ -122,7 +125,7 @@ public class LoaderController {
 	@GetMapping("/getAllByAccountLoader/{accountLoader}")
 	public List<Loader> getAllFilesByAccountLoader(@PathVariable String accountLoader) {
 		try {
-			List<Loader> instagramFiles = csvService.findAllByAccountLoader(accountLoader);
+			List<Loader> instagramFiles = loaderService.findAllByAccountLoader(accountLoader);
 			return instagramFiles;
 
 		} catch (Exception e) {
@@ -132,7 +135,7 @@ public class LoaderController {
 
 	@GetMapping("/impressionsGreaterThan/{threshold}")
 	public List<Loader> getFilesWithImpressionGreaterThanThreshold(@PathVariable int threshold) {
-		List<Loader> files = csvService.getFilesWithImpressionGreaterThanThreshold(threshold);
+		List<Loader> files = loaderService.getFilesWithImpressionGreaterThanThreshold(threshold);
 		if (files.isEmpty()) {
 			return null;
 		} else {
@@ -143,7 +146,7 @@ public class LoaderController {
 	public  void test() {
 		String repositoryUrl = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/";
 
-		csvService.processCsvInstagramFile(repositoryUrl + "instagram");
+		loaderService.processCsvFile(repositoryUrl + "instagram", FileType.INSTAGRAM, false);
 	}
 
 }

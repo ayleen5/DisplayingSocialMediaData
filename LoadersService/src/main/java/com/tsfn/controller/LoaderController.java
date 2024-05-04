@@ -44,11 +44,22 @@ public class LoaderController {
             LocalDateTime endDate = request.getEndDate();
             String accountID = request.getAccountID();
 
-            String directoryPath = repositoryUrl + loaderName;
-            loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID);
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseMessage("Manual run for " + loaderName + " completed successfully."));
+            String directoryPath = repositoryUrl + loaderName;            
+            switch (loaderName.toLowerCase()) {
+            case "instagram":
+                loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID,  FileType.INSTAGRAM);
+                break;
+            case "facebook":
+                loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID,  FileType.FACEBOOK);
+                break;
+            case "linkedin":
+                loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID,  FileType.LINKEDIN);
+                break;
+            default:
+            	
+            	  break;
+            }   
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Manual run for " + loaderName + " completed successfully."));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -46,7 +46,7 @@ public class CsvProcessor {
         }
     }
 
-    private void processCsvRow(FileInfo fileInfo, LocalDateTime fileTimestamp, String userId, FileType fileType) {
+    public void processCsvRow(FileInfo fileInfo, LocalDateTime fileTimestamp, String userId, FileType fileType) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(fileInfo.getDownloadUrl()).openStream()));
              CSVReader csvReader = new CSVReader(reader)) {
 

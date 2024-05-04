@@ -48,7 +48,7 @@ public final class FileFetcherScheduler implements Runnable, InitializingBean, D
 	@Override
 	public void run() {
 
-		String repositoryUrl = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/";
+		String repositoryUrl = "https://api.github.com/repos/YusraRa/tsofen_project_data_files/contents/";
 
 		if (loaderService.isIntasgram()) {
 			loaderService.processCsvInstagramFile(repositoryUrl + "instagram");

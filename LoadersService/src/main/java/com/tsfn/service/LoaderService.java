@@ -67,26 +67,41 @@ public class LoaderService {
 	}
 
 	public void processCsvFilesInRange(String directoryPath, LocalDateTime startDate, LocalDateTime endDate,
+
 			String accountID, FileType fileType) {
+
 		try {
+
 			FileInfo[] csvRows = loaderServiceHelper.getCsvFiles(directoryPath);
 
+
+
 			for (FileInfo fileInfo : csvRows) {
+
 				LocalDateTime fileTimestamp = loaderServiceHelper.extractTimestampFromFileName(fileInfo.getPath());
+
 				if (fileTimestamp.isAfter(startDate) && fileTimestamp.isBefore(endDate)) {
-					// Process the file only if its timestamp is within the specified range and
-					// matches the account ID
+
 					String filename = Paths.get(fileInfo.getName()).getFileName().toString();
+
 					String userId = filename.split("_")[0];
-					if (loaderRepository.count() == 0 || loaderServiceHelper.isWithinLastHour(fileTimestamp, true)) {
-						csvProcessor.processCsvRow(fileInfo, fileTimestamp, userId, fileType);					       
-					}
+
+					csvProcessor.processCsvRow(fileInfo, fileTimestamp, userId, fileType);					       
+
+
+
+
 
 				}
+
 			}
+
 		} catch (Exception e) {
+
 			e.printStackTrace();
+
 		}
+
 	}
 
 	public List<Loader> findAllByAccountLoader(String accountLoader) {

@@ -1,25 +1,15 @@
 package com.tsfn.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import java.net.URL;
-
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
 import com.tsfn.helper.CsvProcessor;
 import com.tsfn.helper.FileType;
 import com.tsfn.helper.LoaderServiceHelper;
@@ -67,26 +57,36 @@ public class LoaderService {
 	}
 
 	public void processCsvFilesInRange(String directoryPath, LocalDateTime startDate, LocalDateTime endDate,
+
 			String accountID, FileType fileType) {
+
 		try {
+
 			FileInfo[] csvRows = loaderServiceHelper.getCsvFiles(directoryPath);
 
 			for (FileInfo fileInfo : csvRows) {
-				LocalDateTime fileTimestamp = loaderServiceHelper.extractTimestampFromFileName(fileInfo.getPath());
-				if (fileTimestamp.isAfter(startDate) && fileTimestamp.isBefore(endDate)) {
-					// Process the file only if its timestamp is within the specified range and
-					// matches the account ID
-					String filename = Paths.get(fileInfo.getName()).getFileName().toString();
-					String userId = filename.split("_")[0];
-					if (loaderRepository.count() == 0 || loaderServiceHelper.isWithinLastHour(fileTimestamp, true)) {
-						csvProcessor.processCsvRow(fileInfo, fileTimestamp, userId, fileType);					       
-					}
 
+				LocalDateTime fileTimestamp = loaderServiceHelper.extractTimestampFromFileName(fileInfo.getPath());
+
+				if (fileTimestamp.isAfter(startDate) && fileTimestamp.isBefore(endDate)) {
+
+					String filename = Paths.get(fileInfo.getName()).getFileName().toString();
+
+					String accountId = filename.split("_")[0];
+
+					if (accountId.equals(accountID)) {
+						csvProcessor.processCsvRow(fileInfo, fileTimestamp, accountId, fileType);
+					}
 				}
+
 			}
+
 		} catch (Exception e) {
+
 			e.printStackTrace();
+
 		}
+
 	}
 
 	public List<Loader> findAllByAccountLoader(String accountLoader) {

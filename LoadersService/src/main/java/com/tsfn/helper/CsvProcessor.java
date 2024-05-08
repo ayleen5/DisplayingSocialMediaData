@@ -35,10 +35,10 @@ public class CsvProcessor {
             for (FileInfo fileInfo : csvRows) {
                 LocalDateTime fileTimestamp = loaderServiceHelper.extractTimestampFromFileName(fileInfo.getPath());
                 String filename = Paths.get(fileInfo.getName()).getFileName().toString();
-                String userId = filename.split("_")[0];
+                String accountId = filename.split("_")[0];
 
                 if (loaderServiceHelper.isWithinLastHour(fileTimestamp, isWithTime)) {
-                    processCsvRow(fileInfo, fileTimestamp, userId, fileType);
+                    processCsvRow(fileInfo, fileTimestamp, accountId, fileType);
                 }
             }
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class CsvProcessor {
         }
     }
 
-    public void processCsvRow(FileInfo fileInfo, LocalDateTime fileTimestamp, String userId, FileType fileType) {
+    public void processCsvRow(FileInfo fileInfo, LocalDateTime fileTimestamp, String accountId, FileType fileType) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(fileInfo.getDownloadUrl()).openStream()));
              CSVReader csvReader = new CSVReader(reader)) {
 
@@ -55,14 +55,14 @@ public class CsvProcessor {
                 try {
                     Loader post = new Loader();
                     if (!nextRecord[0].isBlank()) {
-                        Loader existingPost = loaderRepository.findByAccountLoaderAndTimestampAndPostId(userId, fileTimestamp, nextRecord[0]);
+                        Loader existingPost = loaderRepository.findByAccountLoaderAndTimestampAndPostId(accountId, fileTimestamp, nextRecord[0]);
 
                         if (existingPost != null)
                             break;
 
-                        populateLoaderFields(post, nextRecord, fileType, fileTimestamp, userId);
+                        populateLoaderFields(post, nextRecord, fileType, fileTimestamp, accountId);
                         post.setTimestamp(fileTimestamp);
-                        post.setAccountLoader(userId);
+                        post.setAccountLoader(accountId);
                         loaderServiceHelper.Aggrigation(post);
                     }
 
@@ -75,17 +75,17 @@ public class CsvProcessor {
         }
     }
 
-    private void populateLoaderFields(Loader post, String[] nextRecord, FileType fileType, LocalDateTime fileTimestamp, String userId) {
+    private void populateLoaderFields(Loader post, String[] nextRecord, FileType fileType, LocalDateTime fileTimestamp, String accountId) {
         // Populate loader fields based on file type
         switch (fileType) {
             case INSTAGRAM:
                 populateInstagramFields(post, nextRecord);
                 break;
             case LINKEDIN:
-                populateLinkedInFields(post, nextRecord, fileTimestamp, userId);
+                populateLinkedInFields(post, nextRecord, fileTimestamp, accountId);
                 break;
             case FACEBOOK:
-                populateFacebookFields(post, nextRecord,fileTimestamp, userId);
+                populateFacebookFields(post, nextRecord,fileTimestamp, accountId);
                 break;
             default:
                 // Handle unsupported file types
@@ -120,7 +120,7 @@ public class CsvProcessor {
         }
     }
 
-    private void populateLinkedInFields(Loader post, String[] nextRecord,LocalDateTime fileTimestamp, String userId) {
+    private void populateLinkedInFields(Loader post, String[] nextRecord,LocalDateTime fileTimestamp, String accountId) {
         double impressions = loaderServiceHelper.isValidNumeric(nextRecord[9]) ? Double.parseDouble(nextRecord[9]) : 0.0;
         double clicks = loaderServiceHelper.isValidNumeric(nextRecord[12]) ? Double.parseDouble(nextRecord[12]) : 0.0;
         double likes = loaderServiceHelper.isValidNumeric(nextRecord[14]) ? Double.parseDouble(nextRecord[14]) : 0.0;
@@ -141,13 +141,13 @@ public class CsvProcessor {
         post.setComments(comments);
         post.setShares(reports);
         post.setTimestamp(fileTimestamp);
-        post.setAccountLoader(userId);
+        post.setAccountLoader(accountId);
         post.setCTR(CTR);
         post.setEngagementrate(Engagementrate);
         loaderServiceHelper.Aggrigation(post);
     }
 
-    private void populateFacebookFields(Loader post, String[] nextRecord, LocalDateTime fileTimestamp, String userId) {
+    private void populateFacebookFields(Loader post, String[] nextRecord, LocalDateTime fileTimestamp, String accountId) {
         double impressions = loaderServiceHelper.isValidNumeric(nextRecord[17]) ? Double.parseDouble(nextRecord[17]) : 0.0;
         double reach = loaderServiceHelper.isValidNumeric(nextRecord[18]) ? Double.parseDouble(nextRecord[18]) : 0.0;
         double totalClicks = loaderServiceHelper.isValidNumeric(nextRecord[24]) ? Double.parseDouble(nextRecord[24]) : 0.0;
@@ -165,7 +165,7 @@ public class CsvProcessor {
         post.setComments(comments);
         post.setShares(shares);
         post.setTimestamp(fileTimestamp);
-        post.setAccountLoader(userId);
+        post.setAccountLoader(accountId);
 
         if (impressions == 0)
             post.setCTR(0);

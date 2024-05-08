@@ -1,25 +1,15 @@
 package com.tsfn.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import java.net.URL;
-
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
 import com.tsfn.helper.CsvProcessor;
 import com.tsfn.helper.FileType;
 import com.tsfn.helper.LoaderServiceHelper;
@@ -74,8 +64,6 @@ public class LoaderService {
 
 			FileInfo[] csvRows = loaderServiceHelper.getCsvFiles(directoryPath);
 
-
-
 			for (FileInfo fileInfo : csvRows) {
 
 				LocalDateTime fileTimestamp = loaderServiceHelper.extractTimestampFromFileName(fileInfo.getPath());
@@ -84,14 +72,11 @@ public class LoaderService {
 
 					String filename = Paths.get(fileInfo.getName()).getFileName().toString();
 
-					String userId = filename.split("_")[0];
+					String accountId = filename.split("_")[0];
 
-					csvProcessor.processCsvRow(fileInfo, fileTimestamp, userId, fileType);					       
-
-
-
-
-
+					if (accountId.equals(accountID)) {
+						csvProcessor.processCsvRow(fileInfo, fileTimestamp, accountId, fileType);
+					}
 				}
 
 			}

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: security-ms-app
-  name: security-ms
+  name: security-ms 
 spec:
   ports:
   - port: 8686

@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: security-app
-        image: ayobnas/security-ms:v1.0
+        image: yusrarayyan/security-ms:v1.0
         ports:
         - containerPort: 8686

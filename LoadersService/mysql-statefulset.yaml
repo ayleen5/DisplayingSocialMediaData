@@ -6,18 +6,18 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysqllader
+      app: mysqlloader
   template:
     metadata:
       labels:
-        app: mysqllader
+        app: mysqlloader
     spec:
-      hostname: mysqllader
+      hostname: mysqlloader
       containers:
-      - name: mysqllader
+      - name: mysqlloader
         image: mysql:latest
         ports:
-        - containerPort: 3308
+        - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:

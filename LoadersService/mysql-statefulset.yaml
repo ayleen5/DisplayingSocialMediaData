@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mysqlactions-deployment
+  name: mysqllader-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysqlactions
+      app: mysqllader
   template:
     metadata:
       labels:
-        app: mysqlactions
+        app: mysqllader
     spec:
-      hostname: mysqlactions
+      hostname: mysqllader
       containers:
       - name: mysqlactions
         image: mysql:latest
         ports:
-        - containerPort: 3307
+        - containerPort: 3308
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:

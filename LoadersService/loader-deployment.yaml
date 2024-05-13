@@ -16,4 +16,4 @@ spec:
       - name: loader-app
         image: yusrarayyan/loader-ms:v1.0
         ports:
-        - containerPort: 7070
+        - containerPort: 8686

@@ -14,7 +14,7 @@ spec:
     spec:
       hostname: mysqllader
       containers:
-      - name: mysqlactions
+      - name: mysqllader
         image: mysql:latest
         ports:
         - containerPort: 3308

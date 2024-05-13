@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: action-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: action-app
+  template:
+    metadata:
+      labels:
+        app: action-app
+    spec:
+      containers:
+      - name: action-app
+        image: yusrarayyan/action-ms:v1.0
+        ports:
+        - containerPort: 9090
+        env:
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092"

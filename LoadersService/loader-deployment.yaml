@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: security-app
+  name: loader-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: security-app
+      app: loader-app
   template:
     metadata:
       labels:
-        app: security-app
+        app: loader-app
     spec:
       containers:
-      - name: security-app
+      - name: loader-app
         image: yusrarayyan/loader-ms:v1.0
         ports:
         - containerPort: 7070

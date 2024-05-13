@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
-@FeignClient(name = "security-ms", url = "http://localhost:8686")
+@FeignClient(name = "security-ms")
 public interface SecurityClient {
     
     @PostMapping("/auth/verifyTokenAndCheckRoles")

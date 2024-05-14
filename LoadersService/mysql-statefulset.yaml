@@ -1,23 +1,24 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mysqlloader-deployment
+  name: mysql-loader-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysqlloader
+      app: mysql-loader
   template:
     metadata:
       labels:
-        app: mysqlloader
+        app: mysql-loader
     spec:
+      hostname: mysql-loader
       containers:
-      - name: mysqlloader
+      - name: mysql-loader
         image: mysql:latest
         ports:
         - containerPort: 3306
-      env:
+        env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -28,7 +29,7 @@ spec:
             configMapKeyRef:
               name: mysql-config
               key: MYSQL_DATABASE
-  volumeMounts:
+        volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
   volumeClaimTemplates:

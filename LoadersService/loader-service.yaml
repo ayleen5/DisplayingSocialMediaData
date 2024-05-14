@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: loader-app
+    app: loader-service-app
   name: loader-service
 spec:
   ports:
@@ -10,7 +10,7 @@ spec:
     protocol: TCP
     targetPort: 7070
   selector:
-    app: loader-app
+    app: loader-service-app
   type: NodePort
 status:
   loadBalancer: {}

@@ -1,14 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysqlloader
   labels:
-    app: mysqlloader
+    app: loader-app
+  name: loader-service
 spec:
-  selector:
-    app: mysqlloader
   ports:
-    - protocol: TCP
-      port: 3306
-      targetPort: 3306
-  clusterIP: None
+  - port: 7070
+    protocol: TCP
+    targetPort: 7070
+  selector:
+    app: loader-app
+  type: NodePort
+status:
+  loadBalancer: {}

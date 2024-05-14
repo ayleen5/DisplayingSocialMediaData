@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-//import com.tsfn.controller.client.security.Role;
-//import com.tsfn.controller.client.security.SeccurityHelper;
-//import com.tsfn.controller.client.security.VerifyTokenAndCheckRolesResponse;
+import com.tsfn.controller.client.security.Role;
+import com.tsfn.controller.client.security.SeccurityHelper;
+import com.tsfn.controller.client.security.VerifyTokenAndCheckRolesResponse;
 import com.tsfn.helper.FileType;
 
 import com.tsfn.message.ResponseMessage;
@@ -37,8 +37,8 @@ public class LoaderController {
 	@Autowired
 	private LoaderService loaderService;
 	
-//	@Autowired
-//	private SeccurityHelper seccurityHelper;
+	@Autowired
+	private SeccurityHelper seccurityHelper;
 
 	String message = "";
 	
@@ -51,43 +51,43 @@ public class LoaderController {
 
 		try {
 
-//			List<Role> roles = new ArrayList<>();
-//			roles.add(Role.TRIGGER_MANUAL_SCAN);
-//			roles.add(Role.ADMIN);
-//
-//			VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = seccurityHelper.verifyTokenAndCheckRoles(authorizationHeader, roles);
-//			if (verifyTokenAndCheckRolesResponse.isVerifyTokenAndCheckRoles()) {
-//
-//				String repositoryUrl = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/";
+			List<Role> roles = new ArrayList<>();
+			roles.add(Role.TRIGGER_MANUAL_SCAN);
+			roles.add(Role.ADMIN);
+
+			VerifyTokenAndCheckRolesResponse verifyTokenAndCheckRolesResponse = seccurityHelper.verifyTokenAndCheckRoles(authorizationHeader, roles);
+			if (verifyTokenAndCheckRolesResponse.isVerifyTokenAndCheckRoles()) {
+
+				String repositoryUrl = "https://api.github.com/repos/ayobna/tsofen_project_data_files/contents/";
 				LocalDateTime startDate = request.getStartDate();
 				LocalDateTime endDate = request.getEndDate();
 				String accountID = request.getAccountID();
 
-			//	String directoryPath = repositoryUrl + loaderName;
+				String directoryPath = repositoryUrl + loaderName;
 				switch (loaderName.toLowerCase()) {
-//				case "instagram":
-//					loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID,
-//							FileType.INSTAGRAM);
-//					break;
-//				case "facebook":
-//					loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID,
-//							FileType.FACEBOOK);
-//					break;
-//				case "linkedin":
-//					loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID,
-//							FileType.LINKEDIN);
-//					break;
-//				default:
-//					logger.info("LoaderController.ManualRun" + verifyTokenAndCheckRolesResponse.getMessage());
-//					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//							.body(new ResponseMessage("Loader not found: " + loaderName));
+				case "instagram":
+					loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID,
+							FileType.INSTAGRAM);
+					break;
+				case "facebook":
+					loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID,
+							FileType.FACEBOOK);
+					break;
+				case "linkedin":
+					loaderService.processCsvFilesInRange(directoryPath, startDate, endDate, accountID,
+							FileType.LINKEDIN);
+					break;
+				default:
+					logger.info("LoaderController.ManualRun" + verifyTokenAndCheckRolesResponse.getMessage());
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+							.body(new ResponseMessage("Loader not found: " + loaderName));
 				}
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseMessage("Manual run for " + loaderName + " completed successfully."));
 
-//			}
-//			logger.info("LoaderController.ManualRun" + verifyTokenAndCheckRolesResponse.getMessage());
-//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			logger.info("LoaderController.ManualRun" + verifyTokenAndCheckRolesResponse.getMessage());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info("LoaderController.ManualRun" + e.getMessage());

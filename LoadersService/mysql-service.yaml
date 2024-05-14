@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysqlactions
+  name: mysql-loader
   labels:
-    app: mysqlactions
+    app: mysql-loader
 spec:
   selector:
-    app: mysqlactions
+    app: mysql-loader
   ports:
     - protocol: TCP
       port: 3306

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mysqllader-deployment
+  name: mysqlloader-deployment
 spec:
   replicas: 1
   selector:
@@ -12,12 +12,11 @@ spec:
       labels:
         app: mysqlloader
     spec:
-      hostname: mysqlloader
       containers:
       - name: mysqlloader
         image: mysql:latest
         ports:
-        - containerPort: 3307
+        - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
@@ -32,11 +31,7 @@ spec:
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
-  volumeClaimTemplates:
-  - metadata:
-      name: mysql-persistent-storage
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-persistent-storage

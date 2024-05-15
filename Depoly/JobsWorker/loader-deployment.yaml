@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: loader-app
+  name: jobs-worker
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: loader-app
+      app: jobs-worker
   template:
     metadata:
       labels:
-        app: loader-app
+        app: jobs-worker
     spec:
       containers:
-      - name: loader-app
+      - name: jobs-worker
         image: ayobnas/jobs-worker:v3.0
         ports:
-        - containerPort: 7070
+        - containerPort: 6565

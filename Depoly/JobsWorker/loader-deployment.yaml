@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: jobs-worker
-        image: ayobnas/jobs-worker:v3.0
+        image: ayobnas/jobs-worker:v3.1
         ports:
         - containerPort: 6565

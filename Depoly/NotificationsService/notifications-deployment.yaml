@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: notifications-app
-        image: ayobnas/notifications-service:v1.0
+        image: ayobnas/notifications-service:v3.1
         ports:
         - containerPort: 7777
         env:

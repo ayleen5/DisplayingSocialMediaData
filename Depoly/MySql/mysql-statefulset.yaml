@@ -17,7 +17,7 @@ spec:
       - name: mysqldb
         image: mysql:latest
         ports:
-        - containerPort: 3306  # Corrected port to 3306
+        - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
@@ -37,6 +37,7 @@ spec:
         volumeMounts:
         - name: mysql-persistent-storage-01
           mountPath: /var/lib/mysql
+        command: ["tail", "-f", "/dev/null"]  # Override the command to keep the container running
   volumeClaimTemplates:
   - metadata:
       name: mysql-persistent-storage-01

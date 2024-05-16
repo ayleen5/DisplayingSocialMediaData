@@ -35,11 +35,11 @@ spec:
               name: mysql-config
               key: LOADER_DB
         volumeMounts:
-        - name: mysql-persistent-storage
+        - name: mysql-persistent-storage-01
           mountPath: /var/lib/mysql
   volumeClaimTemplates:
   - metadata:
-      name: mysql-persistent-storage
+      name: mysql-persistent-storage-01
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:

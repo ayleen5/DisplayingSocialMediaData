@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: loader-app
-        image: ayobnas/loader-services:v3.0
+        image: ayobnas/loader-services:v3.2
         ports:
         - containerPort: 7070

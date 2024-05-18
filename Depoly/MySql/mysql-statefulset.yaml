@@ -33,7 +33,7 @@ spec:
             configMapKeyRef:
               name: mysql-config
               key: LOADER_DB
-    volumeMounts:
+        volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
   volumeClaimTemplates:

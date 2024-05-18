@@ -19,10 +19,7 @@ spec:
         - containerPort: 3307
         env:
         - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-secret
-              key: MYSQL_ROOT_PASSWORD
+          value: "1234"  # Directly setting the password
         - name: MYSQL_DATABASE
           valueFrom:
             configMapKeyRef:

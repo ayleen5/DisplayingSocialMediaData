@@ -11,3 +11,6 @@ spec:
     - protocol: TCP
       port: 3306
       targetPort: 3307
+  selector:
+    app: mysqldb
+  clusterIP: None

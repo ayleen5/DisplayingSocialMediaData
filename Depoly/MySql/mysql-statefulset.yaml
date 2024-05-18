@@ -12,6 +12,7 @@ spec:
       labels:
         app: mysqldb
     spec:
+      hostname: mysqldb
       containers:
       - name: mysqldb
         image: mysql:latest
@@ -19,17 +20,15 @@ spec:
         - containerPort: 3307
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: "1234"  # Directly setting the password
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
         - name: MYSQL_DATABASE
           valueFrom:
             configMapKeyRef:
               name: mysql-config
               key: MYSQL_DATABASE
-        - name: LOADER_DB
-          valueFrom:
-            configMapKeyRef:
-              name: mysql-config
-              key: LOADER_DB
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql

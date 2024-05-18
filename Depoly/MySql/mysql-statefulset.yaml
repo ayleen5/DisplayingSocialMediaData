@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: mysqldb-deployment
 spec:
+  serviceName: "mysqldb" # Define a headless service for the StatefulSet
   replicas: 1
   selector:
     matchLabels:
@@ -12,7 +13,6 @@ spec:
       labels:
         app: mysqldb
     spec:
-      hostname: mysqldb
       containers:
       - name: mysqldb
         image: mysql:latest

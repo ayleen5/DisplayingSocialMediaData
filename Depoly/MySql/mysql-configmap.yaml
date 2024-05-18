@@ -6,4 +6,5 @@ data:
   MYSQL_HOST: "mysqldb" 
   MYSQL_PORT: "3306"
   MYSQL_USER: "root"
-  MYSQL_DATABASE: "Actionsdb"
+  MYSQL_DATABASE00: "Actionsdb"
+  MYSQL_DATABASE01: "Loadersdb"

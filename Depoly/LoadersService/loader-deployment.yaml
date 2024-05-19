@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: loader-app
+  name: loader-service-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: loader-app
+      app: loader-service-app
   template:
     metadata:
       labels:
-        app: loader-app
+        app: loader-service-app
     spec:
       containers:
-      - name: loader-app
-        image: ayobnas/loader-services:v4.2
+      - name: loader-service-app
+        image: ayobnas/loader-services:v4.3
         ports:
         - containerPort: 7070

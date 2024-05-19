@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: security-app
+  name: security-ms-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: security-app
+      app: security-ms-app
   template:
     metadata:
       labels:
-        app: security-app
+        app: security-ms-app
     spec:
       containers:
-      - name: security-app
-        image: ayobnas/security-ms:v4.2
+      - name: security-ms-app
+        image: ayobnas/security-ms:v4.3
         ports:
         - containerPort: 8686

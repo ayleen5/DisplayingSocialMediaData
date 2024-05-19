@@ -29,8 +29,8 @@ public class Action {
     private Hashtable<String,ArrayList<String>> conditions;
     @Enumerated(EnumType.STRING)
     private ActionsType action_type;
-    private Time run_on_time;
-    private int run_on_day;
+    private Time runOnTime;
+    private int runOnDay;
     private String notification_text;
     private String recipient; 
     private boolean isEnable;

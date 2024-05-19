@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
-@FeignClient(name = "loader-service", url = "http://localhost:6060")
+@FeignClient(name = "loader-service", url = "http://localhost:7070")
 public interface ClientLoaderController {
 
 	@GetMapping("/Files/getAllByAccountLoader/{accountLoader}")

@@ -30,16 +30,19 @@ public class SecurityConfiguration {
 	private  JwtAuthenticationFilter jwtAuthenticationFilter;
 	@Autowired
     private  UserService userService;
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(request -> request.requestMatchers("/auth/**", "/")
-                        .permitAll().anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	    http.csrf(AbstractHttpConfigurer::disable)
+	        .authorizeHttpRequests(requests -> requests
+	            .requestMatchers("/auth/**", "/")  // Allow access to root URL and /auth/**
+	            .permitAll()
+	            .anyRequest().authenticated())
+	        .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+	        .authenticationProvider(authenticationProvider())
+	        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+	    return http.build();
+	}
 
     @Bean
       PasswordEncoder passwordEncoder() {

@@ -6,7 +6,7 @@ metadata:
   name: security-ms 
 spec:
   ports:
-  - port: 8686
+  - port: 80
     protocol: TCP
     targetPort: 8686
   selector:

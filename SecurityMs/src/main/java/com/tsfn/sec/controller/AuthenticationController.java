@@ -50,7 +50,7 @@ public class AuthenticationController {
 	public ResponseEntity<?> signup(@RequestBody SignUpRequest request) {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+	        System.out.println("test if 9999999999999999999999999999999999999999999999999999999999999999.");
 			if (!userServiceImpl.hasAdminUser()) {
 				ObjectMapper objectMapper = new ObjectMapper();
 				SignUpRequest createAdmin = objectMapper.readValue(initialUserJson, SignUpRequest.class);
@@ -81,6 +81,8 @@ public class AuthenticationController {
 
 	@PostMapping("/signin")
 	public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
+        System.out.println("test if 9999999999999999999999999999999999999999999999999999999999999999.");
+
 		return ResponseEntity.ok(authenticationService.signin(request));
 	}
 

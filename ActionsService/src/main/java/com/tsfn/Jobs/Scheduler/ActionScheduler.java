@@ -15,6 +15,9 @@ import com.tsfn.model.Action;
 import com.tsfn.repository.ActionRepository;
 import com.tsfn.service.KafkaActionProducerImpl;
 
+import java.sql.Time;
+import java.util.Calendar;
+
 @Component
 public final class ActionScheduler implements Runnable, InitializingBean, DisposableBean {
 
@@ -64,27 +67,55 @@ public final class ActionScheduler implements Runnable, InitializingBean, Dispos
         return false;
     }
 
+//    @Override
+//    public void run() {
+//
+//        List<Action> actions = actionRepository.findAll();
+//        for(Action action: actions) {
+//        	System.out.println(action.getName());
+//        	System.out.println("BEFORE sending a message from Action");
+//        	kafkaActionProducer.sendMessage(action); // Send one action to Kafka topic
+//            System.out.println("BEFORE sending a message from Action");
+//        }
+//        
+//        
+////        ObjectMapper objectMapper = new ObjectMapper();
+////        try {
+////            String serializedActions = objectMapper.writeValueAsString(actions);
+////            kafkaTemplate.send("your_topic_name", serializedActions);
+////        } catch (JsonProcessingException e) {
+////            e.printStackTrace();
+////        }
+//        
+//    }
     @Override
     public void run() {
-
-        List<Action> actions = actionRepository.findAll();
-        for(Action action: actions) {
-        	System.out.println(action.getName());
-        	System.out.println("BEFORE sending a message from Action");
-        	kafkaActionProducer.sendMessage(action); // Send one action to Kafka topic
-            System.out.println("BEFORE sending a message from Action");
+        Calendar now = Calendar.getInstance();
+        int currentDay = now.get(Calendar.DAY_OF_WEEK);
+        Time currentTime = truncateSeconds(new Time(now.getTimeInMillis()));
+        System.out.println("Ruuuuuuuun   " + currentDay + "   "+ currentTime );
+        List<Action> actions = actionRepository.findAllByRunOnDayAndRunOnTime(currentDay, currentTime);
+        if(! actions.isEmpty()) {
+        	System.out.println("Not EMPTYYYYY!!!");
         }
-        
-        
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        try {
-//            String serializedActions = objectMapper.writeValueAsString(actions);
-//            kafkaTemplate.send("your_topic_name", serializedActions);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-        
+        for (Action action : actions) {
+        	System.out.println("Gues what, im in the for :)))))))))))))))))");
+            System.out.println(action.getName());
+            System.out.println("BEFORE sending a message from Action");
+            // Send action to Kafka topic
+            kafkaActionProducer.sendMessage(action);
+            System.out.println("AFTER sending a message from Action");
+        }
     }
+
+    private Time truncateSeconds(Time time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(time);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return new Time(calendar.getTimeInMillis());
+    }
+    
 
     @Override
     public void afterPropertiesSet() throws Exception {
